@@ -1,0 +1,5 @@
+node_modules
+databases/
+.env
+tsconfig.json
+nodemon.json
