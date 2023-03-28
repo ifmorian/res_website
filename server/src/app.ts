@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 require('dotenv').config({path: `${__dirname}/../config.env`});
 
@@ -16,7 +17,12 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use('/', require('./routes/router.ts')(express));
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}))
+
+app.use('/', require('./routes/router'));
 
 app.listen(PORT, () => {
   console.log(`Server listening on Port ${PORT}`);

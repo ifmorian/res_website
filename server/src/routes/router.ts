@@ -1,7 +1,8 @@
-module.exports = (express: any) => {
-  const router = express.Router();
+const user = require('./user');
 
-  router.route('/login', require('./user.ts')(router));
+const express1 = require('express')
+const router = express1.Router();
 
-  return router;
-}
+router.post('/register', user.register);
+
+module.exports = router;
