@@ -1,5 +1,3 @@
-import { File } from "buffer"
-
 export interface credentials {
   username: string,
   email: string,
@@ -15,12 +13,6 @@ export interface loginCredentials {
   password: string
 }
 
-export interface user extends credentials {
-  id: number
-}
-
-export interface Team {
-  name: string,
-  game: string,
-  prime_id: string
+export interface team {
+  
 }
