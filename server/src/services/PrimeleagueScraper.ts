@@ -22,24 +22,18 @@ module.exports = {
     return new Promise((resolve, reject) => {
       getTeamSite(teamId)
       .then(($: any) => {
-        let games: Array<PrimeGame> = $('.league-team-stage').filter((index1: number, element1: any) => {
+        console.log($('.league-team-stage').filter((index1: number, element1: any) => {
           return $(element1).children('.section-title').text() === 'Gruppenphase';
         })
           .children('.section-content')
-          .children('.league-stage-matches')
-          .each((index2: number, element2: any) => {
-            console.log(element2)
+          .children('.league-stage-matches').toArray().map((el: any) => {
             return {
               blue: '',
               red: '',
-              result: '',
-              link: $(element2)
-              .children('li').children('table').children('tbody').children('tr').filter((index3: number, element3: any) => {
-                return index3 === 0;
-              }).children('a').attr('href')
+              link: $(el).text()
             }
           })
-        resolve(games);
+        )
       });
     })
   }
