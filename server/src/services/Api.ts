@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default (url: string) => {
+module.exports = (url: string) => {
   return axios.create({
     baseURL: url
   })

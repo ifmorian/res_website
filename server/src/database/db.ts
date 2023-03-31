@@ -32,7 +32,7 @@ const db: Database = new sqlite3.Database('./databases/database.db', (err: any) 
     player_id INTEGER NOT NULL,
     profile_name TEXT NOT NULL,
     game TEXT DEFAULT lol,
-    role TEXT,
+    role TEXT
   );`);
   db.run(`CREATE TABLE IF NOT EXISTS ${TEAMTABLE} (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

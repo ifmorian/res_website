@@ -1,5 +1,4 @@
 const express = require('express');
-const axios = require('axios');
 const cors = require('cors');
 const session = require('express-session');
 const memoryStore = new session.MemoryStore();
@@ -46,3 +45,6 @@ let dir = './databases'
 if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 
 require('./database/db.ts');
+require('./services/PrimeleagueScraper.ts').getGames('155034-ragequit-gaming').then((res: any) => {
+  console.log(res)
+});
