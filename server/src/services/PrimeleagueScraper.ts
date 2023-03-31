@@ -22,15 +22,18 @@ module.exports = {
     return new Promise((resolve, reject) => {
       getTeamSite(teamId)
       .then(($: any) => {
-        console.log($('.league-team-stage').filter((index1: number, element1: any) => {
+        resolve($('.league-team-stage').filter((index1: number, element1: any) => {
           return $(element1).children('.section-title').text() === 'Gruppenphase';
         })
           .children('.section-content')
-          .children('.league-stage-matches').toArray().map((el: any) => {
+          .children('.league-stage-matches')
+          .children('li').get().map((el: any) => {
+            const $game = $(el).find('table > tbody > tr');
             return {
-              blue: '',
-              red: '',
-              link: $(el).text()
+              blue: $game.find('td:nth-child(1) a span').text(),
+              red: $game.children('td').last().find('a span').text(),
+              result: $game.find('td:nth-child(2) a span').text(),
+              link: $game.find('td a').attr('href')
             }
           })
         )
