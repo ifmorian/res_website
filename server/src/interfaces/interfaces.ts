@@ -24,10 +24,3 @@ export interface Team {
   game: string,
   prime_id: string
 }
-
-export interface PrimeGame {
-  blue: string,
-  red: string,
-  link: string,
-  result: string
-}

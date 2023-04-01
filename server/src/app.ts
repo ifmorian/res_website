@@ -47,4 +47,4 @@ if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 require('./database/db.ts');
 require('./services/PrimeleagueScraper.ts').getGames('155034-ragequit-gaming').then((res: any) => {
   console.log(res)
-});
+}).catch((err: Error) => console.error(err.message));

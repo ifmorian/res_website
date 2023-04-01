@@ -1,5 +1,3 @@
-import { PrimeGame } from "interfaces/interfaces";
-
 const Api = require('./Api');
 const cheerio = require('cheerio');
 
@@ -19,7 +17,7 @@ const getTeamSite = async (teamId: string): Promise<any> => {
   });
 }
 
-const getTeamNameFromGame = async (link: string, blue: boolean): Promise<string> => {
+const getTeamDataFromGame = async (link: string, blue: boolean): Promise<object> => {
   return new Promise((resolve, reject) => {
     PrimeApi().get(link.substring(URL.length))
       .then((res: any) => {
@@ -27,18 +25,23 @@ const getTeamNameFromGame = async (link: string, blue: boolean): Promise<string>
         const teamLink = cheerio.load(res.data)(`.content-match-head-team${blue ? '1' : '2'} div a`).attr('href');
         PrimeApi().get(teamLink.substring(URL.length))
           .then((res: any) => {
-            resolve(getTeamNameFromTeamPage(cheerio.load(res.data)));
+            const $ = cheerio.load(res.data);
+            resolve(getTeamData($));
           })
       })
+      .catch((err: Error) => reject(err));
   });
 }
 
-const getTeamNameFromTeamPage = ($: any): string => {
-  return $('.page-title h1').text();
+const getTeamData = ($: any): object => {
+  return {
+    name: $('.page-title h1').text(),
+    seed: $('.content-portrait-head .content-icon-info li:nth-child(2)').text().substring(25)
+  }
 }
 
-module.exports = {
-  getGames: async (teamId: string): Promise<Array<PrimeGame>> => {
+export = {
+  getGames: async (teamId: string): Promise<Array<object>> => {
     return new Promise((resolve, reject) => {
       getTeamSite(teamId)
       .then(($: any) => {
@@ -56,20 +59,22 @@ module.exports = {
             const blueTag = $game.find('td:nth-child(1) a span').text();
             const redTag = $game.children('td').last().find('a span').text();
             return [...result, {
+              date: $(el).find('div span').text(),
               result: $game.find('td:nth-child(2) a span').text(),
               link: link,
               blue: {
                 tag: blueTag,
-                name: teamTag === blueTag ? getTeamNameFromTeamPage($) : await getTeamNameFromGame(link, true),
+                ...(await getTeamDataFromGame(link, true))
               },
               red: {
                 tag: redTag,
-                name : teamTag === redTag ? getTeamNameFromTeamPage($) : await getTeamNameFromGame(link, false),
+                ...(await getTeamDataFromGame(link, false))
               }
             }]
           }, Promise.resolve([]))
         )
-      });
+      })
+      .catch((err: Error) => reject(err));
     })
   }
 };
