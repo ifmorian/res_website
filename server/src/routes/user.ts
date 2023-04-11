@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
+import { UserInterface } from "interfaces/interfaces";
 const db = require('../database/db');
 
 const User = require('./models/User');
 
-module.exports = {
+module.exports = (express: any) => {
 
-  register: async (req: Request, res: Response) => {
+  const router = express.Router();
+
+  router.post('/register', async (req: Request, res: Response) => {
 
     await User({
       username: req.body.username,
@@ -14,13 +17,13 @@ module.exports = {
       passwordRepeat: req.body.passwordRepeat
     })
       .then(async (errorCode: Number) => {
-        if (errorCode !== 1) return res.status(200).send({errorCode: errorCode});
+        if (errorCode !== 1) return res.status(200).json({errorCode: errorCode});
         await db.registerUser({
           username: req.body.username,
           email: req.body.email,
           password: req.body.password
         })
-          .then(() => res.status(200).send({errorCode: 1}))
+          .then(() => res.status(200).json({errorCode: 1}))
           .catch((err: Error) => {
             console.error(err);
             res.status(500);
@@ -31,29 +34,29 @@ module.exports = {
         res.status(500);
       });
     res.end();
-  },
+  });
 
-  login: async (req: Request, res: Response) => {
+  router.post('/login', async (req: Request, res: Response) => {
     await db.loginUser({
       identifier: req.body.identifier,
       password: req.body.password
     })
-      .then((errorCode: Number) => {
-        if (errorCode === 1) {
-          let session = req.session;
-          session.isloggedin = true;
-        }
-        res.status(200).send({
-          errorCode: errorCode
+      .then((user: UserInterface) => {
+        let session = req.session;
+        session.user_id = user.id;
+        res.status(200).json({
+          errorCode: 1
         }).end();
       })
-      .catch((err: Error) => {
-        console.error(err);
-        res.status(500);
+      .catch((errorCode: number) => {
+        if (errorCode === 0) return res.status(500).end();
+        res.status(200).json({
+          errorCode: errorCode
+        }).end();
       });
-  },
+  });
 
-  logout: async (req: Request, res: Response) => {
+  router.post('/logout', async (req: Request, res: Response) => {
     console.log(req.session)
     req.session.destroy((err: Error) => {
       if (err) {
@@ -62,6 +65,6 @@ module.exports = {
       }
       res.status(204).end();
     });
-  }
+  });
 
 }

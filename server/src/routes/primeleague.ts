@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 const PrimeleagueScraper = require("../services/PrimeleagueScraper");
 
-module.exports = {
-  getTeamSchedule: (req: Request, res: Response) => {
+module.exports = (express: any) => {
+  const router = express.Router();
+  router.post('/games', (req: Request, res: Response) => {
     if (!req.body.teamid) return res.end(); //status code adden
     PrimeleagueScraper.getGames(req.body.teamid)
       .then((games: Array<object>) => {
@@ -12,5 +13,5 @@ module.exports = {
         console.error(err.message);
         res.status(500).end();
       })
-  }
+  });
 }

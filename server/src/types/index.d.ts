@@ -2,6 +2,6 @@ import "express-session"
 
 declare module "express-session" {
   interface SessionData {
-    isloggedin: boolean,
+    user_id: number,
   }
 }

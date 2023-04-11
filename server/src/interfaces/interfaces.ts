@@ -1,21 +1,19 @@
-import { File } from "buffer"
-
-export interface credentials {
+export interface Credentials {
   username: string,
   email: string,
   password: string
 }
 
-export interface registerCredentials extends credentials {
+export interface RegisterCredentials extends Credentials {
   passwordRepeat: string
 }
 
-export interface loginCredentials {
+export interface LoginCredentials {
   identifier: string,
   password: string
 }
 
-export interface user extends credentials {
+export interface UserInterface extends Credentials {
   id: number
 }
 

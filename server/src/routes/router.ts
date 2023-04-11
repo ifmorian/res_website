@@ -1,17 +1,12 @@
 import { Router } from "express";
 
 const user = require('./user');
-const primeleague = require('./primeleague')
+const primeleague = require('./primeleague');
 
-const express1 = require('express')
-const router: Router = express1.Router();
+const express1 = require('express');
 
-router.post('/register', user.register);
-router.post('/login', user.login);
-router.post('/logout', user.logout);
-
-router.post('/teams');
-
-router.post('/games', primeleague.getTeamSchedule);
-
-module.exports = router;
+module.exports = (app: any) => {
+  app.use('/user', require('./user')(express1));
+  app.use('/teams', require('./teams')(express1));
+  app.use('/primeleague', require('./primeleague')(express1));
+};
