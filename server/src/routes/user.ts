@@ -4,7 +4,7 @@ const db = require('../database/db');
 
 const User = require('./models/User');
 
-module.exports = (express: any) => {
+module.exports = () => {
 
   const router = express.Router();
 

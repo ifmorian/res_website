@@ -10,6 +10,16 @@ const USER_IN_TEAM_TABLE = 'user_in_team';
 const PROFILETABLE = 'profile';
 const TEAMTABLE = 'team';
 
+const getTeamId = async(name: string): Promise<number | null> => {
+  return new Promise((resolve, reject) => {
+    let sql: string = `SELECT id FROM ${TEAMTABLE} WHERE name=?`;
+    db.get(sql, [name], (err: Error, rows: {id: number}) => {
+      if (err) return reject(err);
+      rows ? resolve(rows.id) : resolve(null);
+    });
+  });
+}
+
 const db: Database = new sqlite3.Database('./databases/database.db', (err: any) => {
   if (err) return console.error(err.message);
   db.run(`CREATE TABLE IF NOT EXISTS ${USERTABLE} (
@@ -86,7 +96,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       let sql: string = `SELECT admin FROM ${USERTABLE} WHERE id=?`;
       db.get(sql, [user_id], (err: Error, row: any) => {
-        console.log(row)
+        console.log(row) //c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       });
     });
   },
@@ -106,20 +116,17 @@ module.exports = {
       });
     });
   },
-  setTeamActive: async(active: boolean): Promise<number> => {
+  setTeamActive: async(team: Team, active: boolean): Promise<boolean> => {
     return new Promise((resolve, reject) => {
-
-    });
-  },
-  getTeamId: async(name: string): Promise<number | null> => {
-    return new Promise((resolve, reject) => {
-      let sql: string = `SELECT id FROM ${TEAMTABLE} WHERE name=?`;
-      db.get(sql, [name], (err: Error, rows: {id: number}) => {
-        if (err) return reject(err);
-        rows ? resolve(rows.id) : resolve(null);
+      let teamId = getTeamId(team.name);
+      if (!teamId) resolve(false);
+      let sql: string = `UPDATE ${TEAMTABLE} SET active=? WHERE id=?`;
+      db.all(sql, [active, teamId], (err: Error): void => {
+        err ? reject(err) : resolve(true);
       });
     });
   },
+  getTeamId,
   addTeamMember: async (userId: string, teamId: Number): Promise<void> => {
     return new Promise((resolve, reject) => {
       let sql: string = `INSERT INTO ${USER_IN_TEAM_TABLE} (user_id, team_id) VALUES (?,?)`;

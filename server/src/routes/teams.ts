@@ -2,7 +2,8 @@ import { Request, Response, response } from "express";
 const Team = require('./models/Team');
 const db = require('../database/db');
 
-module.exports = (express: any) => {
+module.exports = () => {
+
   const router = express.Router();
 
   router.post('/create', (req: Request, res: Response) => {
