@@ -1,9 +1,34 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import BackgroundLight from './components/BackgroundLight.vue';
 </script>
 
 <template>
+
+  <div class="background">
+    <BackgroundLight
+      class="background-light"
+      :stroke-width="7.5"
+      :x-start="100" :y-start="500" :x-end="1400" :y-end="400" :animated="false" :delay="0"
+    />
+    <BackgroundLight
+      class="background-light"
+      :stroke-width="4"
+      :x-start="-300" :y-start="850" :x-end="500" :y-end="800" :animated="true" :delay="2"
+    />
+    <BackgroundLight
+      class="background-light"
+      :stroke-width="6"
+      :x-start="1300" :y-start="250" :x-end="2000" :y-end="350" :animated="true" :delay="4"
+    />
+    <BackgroundLight
+      class="background-light"
+      :stroke-width="5"
+      :x-start="800" :y-start="700" :x-end="1500" :y-end="800" :animated="true" :delay="6"
+    />
+  </div>
+  
   <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
@@ -20,12 +45,41 @@ import HelloWorld from './components/HelloWorld.vue'
   </header>
 
   <RouterView />
+
 </template>
 
+<script lang="ts">
+
+  export default {
+    beforeCreate() {
+    },
+}
+
+</script>
+
 <style scoped>
+
+.background {
+  opacity: .5;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  aspect-ratio: 16 / 9;
+  z-index: -1;
+}
+
+.background-light {
+  position: absolute;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 5%;
+  background: var(--color-background-soft);
 }
 
 .logo {

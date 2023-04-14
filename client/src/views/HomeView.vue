@@ -7,3 +7,8 @@ import TheWelcome from '../components/TheWelcome.vue'
     <TheWelcome />
   </main>
 </template>
+
+
+<style scoped>
+  
+</style>
