@@ -1,5 +1,7 @@
+
+
 <template>
-  <div class="wrapper" :class="{active: activeInput}">
+  <div ref="ball-wrapper" class="ball-wrapper" :class="{active: activeInput}" :style="{top: currentTop + 'px', left: currentLeft + 'px'}">
     <div class="ball" v-on:click="toggle">
       {{ title }}
     </div>
@@ -10,15 +12,20 @@
 </template>
 
 <script lang="ts">
+
   export default {
     props: {
       title: String,
       placeholder: String,
       active: Boolean,
+      top: Number,
+      left: Number,
     },
     data() {
       return {
         activeInput: this.active,
+        currentTop: this.top,
+        currentLeft: this.left
       }
     },
     methods: {
@@ -34,13 +41,34 @@
           this.activeInput = false;
         }, 100);
       }
+    },
+    mounted() {
+      const wrapper = <HTMLDivElement>(document.querySelector('.ball-wrapper'));
+      let pickedUp: boolean = false;
+      let x = 0;
+      let y = 0;
+      wrapper.addEventListener("mousedown", (event) => {
+        pickedUp = true;
+        x = event.clientX - <number>this.currentLeft;
+        y = event.clientY - <number>this.currentTop;
+      });
+      window.addEventListener("mouseup", (event) => {
+        pickedUp = false;
+      });
+      window.addEventListener("mousemove", async (event: MouseEvent) => {
+        if (!pickedUp) return;
+        this.currentLeft = event.clientX - x;
+        this.currentTop = event.clientY - y;
+        wrapper.style.top = this.currentLeft + "px";
+        wrapper.style.left = this.currentTop + "px";
+      });
     }
   }
 </script>
 
 <style scoped>
 
-  .wrapper {
+  .ball-wrapper {
     position: absolute;
     user-select: none;
   }
@@ -48,10 +76,10 @@
   .ball {
     position: absolute;
 
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     background: var(--secondary);
-    border: 2px solid var(--color-border);
+    border: 4px solid var(--color-border);
     border-radius: 60px;
 
     display: flex;
@@ -71,15 +99,15 @@
     align-items: center;
 
     position: absolute;
-    left: 80px;
-    top: 30px;
+    left: 65px;
+    top: 20px;
 
     border-radius: 30px;
-    border: 2px solid rgba(50, 50, 50 .3) inset;
+    border: 4px solid var(--color-border);
 
     height: 60px;
 
-    background: var(--primary);
+    background: var(--color-text);
     transition: width .2s;
   }
 
@@ -95,12 +123,12 @@
     outline: none;
   }
 
-  .wrapper:not(.active) .ball-input {
+  .ball-wrapper:not(.active) .ball-input {
     width: 0px;
   }
 
   .active .ball-input {
-    width: 500px;
+    width: 400px;
   }
 
   .active {
@@ -109,10 +137,10 @@
 
   .active input {
     visibility: visible;
-    width: 400px;
+    width: 300px;
   }
 
-  .wrapper:not(.active) input {
+  .ball-wrapper:not(.active) input {
     width: 0;
     visibility: hidden;
   }
