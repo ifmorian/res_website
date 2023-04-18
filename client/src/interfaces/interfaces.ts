@@ -16,3 +16,8 @@ export interface loginCredentials {
 export interface team {
   
 }
+
+export interface input {
+  id: string,
+  location: Array<number>
+}

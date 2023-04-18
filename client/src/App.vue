@@ -10,22 +10,32 @@ import BackgroundLight from './components/BackgroundLight.vue';
     <BackgroundLight
       class="background-light"
       :stroke-width="7.5"
-      :x-start="100" :y-start="500" :x-end="1400" :y-end="400" :animated="false" :delay="0"
+      :x-start="100" :y-start="500" :x-end="1200" :y-end="400" :animated="true" :delay="0"
     />
     <BackgroundLight
       class="background-light"
       :stroke-width="4"
-      :x-start="-300" :y-start="850" :x-end="500" :y-end="800" :animated="true" :delay="2"
+      :x-start="-300" :y-start="850" :x-end="500" :y-end="800" :animated="true" :delay="0.4"
     />
     <BackgroundLight
       class="background-light"
       :stroke-width="6"
-      :x-start="1300" :y-start="250" :x-end="2000" :y-end="350" :animated="true" :delay="4"
+      :x-start="1300" :y-start="250" :x-end="2000" :y-end="350" :animated="true" :delay="1.3"
     />
     <BackgroundLight
       class="background-light"
       :stroke-width="5"
-      :x-start="800" :y-start="700" :x-end="1500" :y-end="800" :animated="true" :delay="6"
+      :x-start="800" :y-start="700" :x-end="1500" :y-end="800" :animated="true" :delay="0.9"
+    />
+    <BackgroundLight
+      class="background-light"
+      :stroke-width="4"
+      :x-start="-100" :y-start="250" :x-end="300" :y-end="300" :animated="true" :delay="1.5"
+    />
+    <BackgroundLight
+      class="background-light"
+      :stroke-width="4"
+      :x-start="1600" :y-start="700" :x-end="2100" :y-end="640" :animated="true" :delay="1.7"
     />
   </div>
   

@@ -59,7 +59,7 @@ defineProps<{
   .animated {
     stroke-dasharray: 95% 10%;
     stroke-dashoffset: 105%;
-    animation: move 8s infinite ease;
+    animation: move 18s infinite ease-in-out;
   }
 
   .background {
@@ -67,8 +67,16 @@ defineProps<{
   }
 
   @keyframes move {
-    50%, to {
+    25%, 50% {
       stroke-dashoffset: 0;
+      stroke: var(--primary);
+    }
+    67% {
+      stroke: var(--secondary);
+    }
+    75%, to {
+      stroke-dashoffset: -105%;
+      stroke: var(--secondary);
     }
   }
 </style>
