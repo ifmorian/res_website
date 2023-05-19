@@ -1,15 +1,14 @@
 import { Request, Response } from "express";
 import { UserInterface } from "interfaces/interfaces";
+const express = require('express');
+const router = express.Router();
 const db = require('../database/db');
 
 const User = require('./models/User');
 
-module.exports = () => {
+module.exports =  {
 
-  const router = express.Router();
-
-  router.post('/register', async (req: Request, res: Response) => {
-
+  async register(req: Request, res: Response) {
     await User({
       username: req.body.username,
       email: req.body.email,
@@ -34,9 +33,9 @@ module.exports = () => {
         res.status(500);
       });
     res.end();
-  });
+  },
 
-  router.post('/login', async (req: Request, res: Response) => {
+  async login(req: Request, res: Response) {
     await db.loginUser({
       identifier: req.body.identifier,
       password: req.body.password
@@ -54,10 +53,9 @@ module.exports = () => {
           errorCode: errorCode
         }).end();
       });
-  });
+  },
 
-  router.post('/logout', async (req: Request, res: Response) => {
-    console.log(req.session)
+  async logout(req: Request, res: Response) {
     req.session.destroy((err: Error) => {
       if (err) {
         console.error(err);
@@ -65,6 +63,12 @@ module.exports = () => {
       }
       res.status(204).end();
     });
-  });
+  },
+
+  async isLoggedIn(req: Request, res: Response) {
+    res.status(200).send({
+      login: req.session.user_id
+    }).end();
+  }
 
 }

@@ -3,10 +3,14 @@ import { Router } from "express";
 const user = require('./user');
 const primeleague = require('./primeleague');
 
-const express1 = require('express');
+const express = require('express');
+const router = express.Router();
 
-module.exports = (app: any) => {
-  app.use('/user', require('./user'));
-  app.use('/teams', require('./teams'));
-  app.use('/primeleague', require('./primeleague'));
-};
+router.post('/user/login', user.login);
+router.post('/user/register', user.register);
+router.post('/user/logout', user.logout);
+router.post('/user/isloggedin', user.isLoggedIn);
+// app.use('/teams', require('./teams'));
+// app.use('/primeleague', require('./primeleague'));
+
+module.exports = router;

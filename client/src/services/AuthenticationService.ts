@@ -10,5 +10,8 @@ export default {
   },
   logout() {
     return Api().post('logout');
-  }
+  },
+  isloggedin() {
+    return Api().post('user/isloggedin');
+  },
 }

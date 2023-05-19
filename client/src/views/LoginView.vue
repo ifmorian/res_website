@@ -1,8 +1,12 @@
+<script setup lang="ts">
+  import MagicText from '../components/MagicText.vue';
+</script>
+
 <template>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <div class="base">
     <div class="card">
-      <div class="card-title" id="input-parent">Register</div>
+      <MagicText class="card-title" id="input-parent" size="300%" text="Login"/>
 
       <form action="post">
 
@@ -69,63 +73,55 @@
 </template>
 
 <script lang="ts">
+
   export default {
     data() {
-      return {
-        username: '',
-        password: '',
-        passwordVisible: false
-      };
+        return {
+            username: "",
+            password: "",
+            passwordVisible: false
+        };
     },
     methods: {
-      playInputAnimation(el: number) {
-        console.log(this.username)
-        switch(el) {
-          case 0: {
-            if (this.username === '') return (this.$refs.usernameIcon as HTMLSpanElement).style.color = 'unset';
-            (this.$refs.usernameBorder as SVGElement).animate(
-              [
-                { transform: "rotate(600deg)" }
-              ],
-              {
-                duration: 1000,
-              }
-            ).play();
-            (this.$refs.usernameBorderCircle as SVGElement).animate(
-              [
-                { strokeDashoffset: "-270%" }
-              ],
-              {
-                duration: 1000,
-              }
-            ).play();
-            (this.$refs.usernameIcon as HTMLSpanElement).style.color = 'var(--success)';
-            break;
-          }
-          case 1: {
-            if (this.password === '') return (this.$refs.passwordIcon as HTMLSpanElement).style.color = 'unset';
-            (this.$refs.passwordBorder as SVGElement).animate(
-              [
-                { transform: "rotate(600deg)" }
-              ],
-              {
-                duration: 1000,
-              }
-            ).play();
-            (this.$refs.passwordBorderCircle as SVGElement).animate(
-              [
-                { strokeDashoffset: "-270%" }
-              ],
-              {
-                duration: 1000,
-              }
-            ).play();
-            (this.$refs.passwordIcon as HTMLSpanElement).style.color = 'var(--success)';
-            break;
-          }
+        playInputAnimation(el: number) {
+            const duration = 700;
+            switch (el) {
+                case 0: {
+                    if (this.username === "")
+                        return (this.$refs.usernameIcon as HTMLSpanElement).style.color = "unset";
+                    (this.$refs.usernameBorder as SVGElement).animate([
+                        { transform: "rotate(600deg)" }
+                    ], {
+                        duration: duration,
+                    }).play();
+                    (this.$refs.usernameBorderCircle as SVGElement).animate([
+                        { strokeDashoffset: "0", strokeWidth: 0 }
+                    ], {
+                        duration: duration,
+                    }).play();
+                    (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--success)";
+                    break;
+                }
+                case 1: {
+                    if (this.password === "")
+                        return (this.$refs.passwordIcon as HTMLSpanElement).style.color = "unset";
+                    (this.$refs.passwordBorder as SVGElement).animate([
+                        { transform: "rotate(600deg)" }
+                    ], {
+                        duration: duration,
+                    }).play();
+                    (this.$refs.passwordBorderCircle as SVGElement).animate([
+                        { strokeDashoffset: "-5%", strokeWidth: 0 }
+                    ], {
+                        duration: duration,
+                    }).play();
+                    (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--success)";
+                    break;
+                }
+            }
         }
-      }
     },
+    components: { MagicText }
 }
 </script>
 
@@ -142,17 +138,14 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-top: 25vh;
   }
 
   .card {
     width: 50%;
-    padding: 20px 70px;
+    padding: 1.7% 4%;
     background: var(--color-background-mute);
     opacity: .8;
-  }
-
-  .card-title {
-    font-size: 400%;
   }
 
   form {

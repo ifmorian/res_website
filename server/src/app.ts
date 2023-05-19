@@ -34,7 +34,7 @@ app.use(session({
   }
 }));
 
-require('./routes/router')(app);
+app.use('/', require('./routes/router'));
 
 app.listen(PORT, () => {
   console.log(`Server listening on Port ${PORT}`);

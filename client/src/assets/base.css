@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=B612+Mono&family=Ubuntu+Mono&display=swap');
 /* color palette from <https://github.com/vuejs/theme> */
+@font-face {
+  font-family: 'Austere';
+  src: url('./fonts/Austere.ttf');
+}
+
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -21,11 +26,11 @@
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 
-  --primary: rgb(24, 120, 180);
-  --secondary: rgb(24, 180, 150);
+  --primary: rgb(0, 82, 76);
+  --secondary: rgb(109, 206, 178);
 
   --error: red;
-  --success: var(--secondary);
+  --success: rgb(112, 228, 112);
 }
 
 /* semantic color variables for this project */
@@ -33,6 +38,8 @@
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
+
+  --color-logo-bg: var(--vt-c-black-mute);
 
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
@@ -48,6 +55,8 @@
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
+
+    --color-logo-bg: var(--vt-c-white);
 
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
@@ -81,4 +90,12 @@ body {
 
 input {
   font-family: 'Ubuntu Mono', monospace;
+}
+
+.first-letter {
+  color: var(--secondary);
+}
+
+.font-austere {
+  font-family: 'Austere';
 }

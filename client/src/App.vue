@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
 import BackgroundLight from './components/BackgroundLight.vue';
 </script>
 
 <template>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <div class="background">
     <BackgroundLight
@@ -40,18 +40,27 @@ import BackgroundLight from './components/BackgroundLight.vue';
   </div>
   
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/register">Register</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-      </nav>
+    <nav class="nav">
+      <a href="/" class="home">Home</a>
+      <a href="/" class="home">Teams</a>
+      <a href="/" class="home">Stream</a>
+    </nav>
+    <div class="logo-wrapper">
+      <picture class="logo">
+        <source srcset="@/assets/logo_wotext_white.svg" media="(prefers-color-scheme: dark)">
+        <img src="@/assets/logo_wotext.svg" />
+      </picture>
     </div>
+    <nav class="nav">
+      <a href="/" class="home">Join RES</a>
+      <a href="/" class="home">Contact</a>
+      <a href="/" class="home">Contact</a>
+    </nav>
+    <a class="profile" @click="loggedIn = !loggedIn">
+      <span v-if="loggedIn" class="profile-picture"></span>
+      <span v-else class="material-symbols-outlined profile-login">login</span>
+    </a>
+    <div id="header-border"></div>
   </header>
 
   <RouterView />
@@ -59,9 +68,30 @@ import BackgroundLight from './components/BackgroundLight.vue';
 </template>
 
 <script lang="ts">
+import AuthenticationService from './services/AuthenticationService';
 
   export default {
+    data() {
+      return {
+        scrolled: true,
+        loggedIn: true
+      }
+    },
     beforeCreate() {
+      AuthenticationService.isloggedin().then(res => {
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+    mounted() {
+      const header = document.getElementById('header-border') as HTMLHeadElement;
+      const resize = () => {
+        header.style.width = window.scrollY / (document.body.scrollHeight - document.body.clientHeight) * 100 + '%';
+      }
+      window.addEventListener('scroll', () => resize());
+      window.addEventListener('resize', () => resize());
     },
 }
 
@@ -83,69 +113,88 @@ import BackgroundLight from './components/BackgroundLight.vue';
 }
 
 header {
+  position: fixed;
   line-height: 1.5;
-  max-height: 100vh;
+  height: 14vh;
   width: 100vw;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   margin-bottom: 5%;
   background: var(--color-background-soft);
+  border-bottom: .5vh solid var(--secondary);
+  z-index: 20;
+}
+
+#header-border {
+  position: absolute;
+  content: '';
+  left: 0; top: 0;
+  width: 0%;
+  height: 14vh;
+  border-bottom: .5vh solid var(--primary);
+  pointer-events: none;
+}
+
+.nav {
+  /* width: 35%; */
+  width: 30%;
+  margin: 0 5%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+/* .nav:nth-child(3) {
+  width: 25%;
+  margin-right: 15%;
+  margin-left: 5%;
+} */
+
+.profile {
+  position: absolute;
+  right: 5vh;
+  top: 4vh;
+  width: 6vh;
+  height: 6vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  background: var(--secondary);
+  border-radius: 50%;
+  outline: .4vh solid var(--color-text);
+  display: inline-block;
+}
+
+.profile-login {
+  font-size: 5vh;
+}
+
+a {
+  font-family: 'Austere';
+  font-size: 1.3vw;
+  cursor: pointer;
+}
+
+.logo-wrapper {
+  position: relative;
+  width: 12vh;
+  height: 12vh;
+  border-radius: 50%;
+  transition: .4s;
 }
 
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
+  position: absolute;
+  width: 95%;
+  height: 50%;
+  left: 2.5%;
+  top: 1vh;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>
