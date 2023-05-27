@@ -2,11 +2,9 @@ import { Request, Response, response } from "express";
 const Team = require('./models/Team');
 const db = require('../database/db');
 
-module.exports = () => {
+module.exports = {
 
-  const router = express.Router();
-
-  router.post('/create', (req: Request, res: Response) => {
+  async create(req: Request, res: Response) {
       Team(
         req.body.name,
         req.body.game,
@@ -21,9 +19,9 @@ module.exports = () => {
           console.error(err.message);
           res.status(500).end();
         });
-  });
+  },
 
-  router.post('/setactive', (req: Request, res: Response) => {
+  async setactive(req: Request, res: Response) {
     
-  });
+  },
 }

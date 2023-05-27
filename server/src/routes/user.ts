@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import { UserInterface } from "interfaces/interfaces";
-const express = require('express');
-const router = express.Router();
 const db = require('../database/db');
 
 const User = require('./models/User');

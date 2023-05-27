@@ -1,14 +1,14 @@
 <script setup lang="ts">
-  import MagicText from '../components/MagicText.vue';
+import MagicText from '../components/MagicText.vue';
 </script>
 
 <template>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <div class="base">
     <div class="card">
-      <MagicText class="card-title" id="input-parent" size="300%" text="Login"/>
+      <div class="card-title" id="input-parent">Login</div>
 
-      <form action="post">
+      <form method="dialog">
 
         <div class="card-input">
           <div class="card-input-icon-wrapper">
@@ -25,12 +25,13 @@
                 name="username"
                 placeholder="username"
                 class="card-input-data-input"
-                @blur="() => playInputAnimation(0)"
+                @click="() => usernameActive = true"
+                @blur="() => {playInputAnimation(0)}"
                 @input="() => ($refs.usernameIcon as HTMLSpanElement).style.color = 'unset'"
               >
               <span class="card-input-data-input-border"></span>
             </div>
-            <div class="card-input-data-error">Testjsaefbkaebfjkefkl awdawd awdawdadawd</div>
+            <div class="card-input-data-error"></div>
           </div>
         </div>
 
@@ -49,12 +50,13 @@
                 name="password"
                 :type="passwordVisible ? 'text' : 'password'"
                 class="card-input-data-input"
-                @blur="() => playInputAnimation(1)"
+                @click="() => passwordActive = true"
+                @blur="() => {playInputAnimation(1)}"
                 @input="() => ($refs.passwordIcon as HTMLSpanElement).style.color = 'unset'"
               >
               <span class="card-input-data-input-border"></span>
             </div>
-            <div class="card-input-data-error">Testjsaefbkaebfjkefkl awdawd awdawdadawd</div>
+            <div class="card-input-data-error"></div>
           </div>
           <span
             class="material-symbols-outlined card-input-icon-password"
@@ -64,6 +66,13 @@
           >
             {{passwordVisible ? 'visibility_off' : 'visibility'}}
           </span>
+        </div>
+
+        <div class="card-input login">
+          <div class="card-input-icon-wrapper">
+            <span ref="submitIcon" class="material-symbols-outlined card-input-icon login-icon">deployed_code</span>
+          </div>
+          <input type="submit" value="login" class="card-input-data-input login-button" @click="() => login()">
         </div>
 
       </form>
@@ -79,47 +88,95 @@
         return {
             username: "",
             password: "",
-            passwordVisible: false
+            passwordVisible: false,
+            usernameActive: false,
+            passwordActive: false,
         };
     },
     methods: {
-        playInputAnimation(el: number) {
-            const duration = 700;
-            switch (el) {
-                case 0: {
-                    if (this.username === "")
-                        return (this.$refs.usernameIcon as HTMLSpanElement).style.color = "unset";
-                    (this.$refs.usernameBorder as SVGElement).animate([
-                        { transform: "rotate(600deg)" }
-                    ], {
-                        duration: duration,
-                    }).play();
-                    (this.$refs.usernameBorderCircle as SVGElement).animate([
-                        { strokeDashoffset: "0", strokeWidth: 0 }
-                    ], {
-                        duration: duration,
-                    }).play();
-                    (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--success)";
-                    break;
-                }
-                case 1: {
-                    if (this.password === "")
-                        return (this.$refs.passwordIcon as HTMLSpanElement).style.color = "unset";
-                    (this.$refs.passwordBorder as SVGElement).animate([
-                        { transform: "rotate(600deg)" }
-                    ], {
-                        duration: duration,
-                    }).play();
-                    (this.$refs.passwordBorderCircle as SVGElement).animate([
-                        { strokeDashoffset: "-5%", strokeWidth: 0 }
-                    ], {
-                        duration: duration,
-                    }).play();
-                    (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--success)";
-                    break;
-                }
-            }
-        }
+      checkUsername() {
+        return this.username !== '';
+      },
+      checkPassword() {
+        return (this.password !== '' && this.password.length > 6);
+      },
+      playInputAnimation(el: number) {
+          const duration = 700;
+          switch (el) {
+              case 0: {
+                  if (this.username === "")
+                      return (this.$refs.usernameIcon as HTMLSpanElement).style.color = "unset";
+                  (this.$refs.usernameBorder as SVGElement).animate([
+                      { transform: "rotate(600deg)" }
+                  ], {
+                      duration: duration,
+                  }).play();
+                  (this.$refs.usernameBorderCircle as SVGElement).animate([
+                      { strokeDashoffset: "0", strokeWidth: 0 }
+                  ], {
+                      duration: duration,
+                  }).play();
+                  (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--secondary)";
+        console.log(this.usernameActive)
+                  setTimeout(() => {this.usernameActive = false}, 500);
+                  break;
+              }
+              case 1: {
+                  if (this.password === "")
+                      return (this.$refs.passwordIcon as HTMLSpanElement).style.color = "unset";
+                  (this.$refs.passwordBorder as SVGElement).animate([
+                      { transform: "rotate(600deg)" }
+                  ], {
+                      duration: duration,
+                  }).play();
+                  (this.$refs.passwordBorderCircle as SVGElement).animate([
+                      { strokeDashoffset: "-5%", strokeWidth: 0 }
+                  ], {
+                      duration: duration,
+                  }).play();
+                  console.log(this.$refs.passwordIcon);
+                  (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--secondary)";
+                  setTimeout(() => {this.passwordActive = false}, 200);
+                  break;
+              }
+          }
+      },
+      login() {
+        setTimeout(() => {
+          console.log(this.usernameActive || this.passwordActive)
+          let u = this.checkUsername();
+          let p = this.checkPassword();
+          this.playLoginAnimation(false);
+          if (!u || !p) {
+            setTimeout(() => {
+              if (!u) (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--error)";
+              if (!p) (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--error)";
+              this.playLoginAnimation(true);
+            }, 800);
+          }
+        }, (this.usernameActive || this.passwordActive) ? 500 : 0);
+        this.usernameActive = false;
+        this.passwordActive = false;
+      },
+      playLoginAnimation(reverse: boolean) {
+        const timingOptions: KeyframeAnimationOptions = {
+          duration: 500,
+          easing: "cubic-bezier(1,0,1,1)",
+          fill: "forwards",
+          direction: reverse ? "reverse" : "normal"
+        };
+        const animation1 = (this.$refs.usernameIcon as HTMLSpanElement).animate([
+          {marginTop: "0", opacity: 1},
+          {marginTop: "15vw", opacity: 0}
+        ], timingOptions);
+        const animation2 = (this.$refs.passwordIcon as HTMLSpanElement).animate([
+          {marginTop: "0", opacity: 1},
+          {marginTop: "10vw", opacity: 0}
+        ], timingOptions);
+
+        animation1.play();
+        animation2.play();
+      }
     },
     components: { MagicText }
 }
@@ -132,20 +189,26 @@
     'FILL' 0,
     'wght' 300,
     'GRAD' 0,
-    'opsz' 48
+    'opsz' 48;
   }
   .base {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 25vh;
+    margin-top: 12vw;
   }
 
   .card {
     width: 50%;
+    height: 30vw;
     padding: 1.7% 4%;
     background: var(--color-background-mute);
     opacity: .8;
+    margin-bottom: 10%;
+  }
+
+  .card-title {
+    font-size: 250%;
   }
 
   form {
@@ -154,17 +217,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 10%;
+    margin-top: 5%;
     margin-bottom: 5%;
   }
 
   .card-input {
     display: flex;
+    justify-content: center;
     flex-direction: row;
 
     width: 50%;
+    height: 4vw;
 
-    margin-bottom: 10%;
+    margin-bottom: 1vw;
   }
 
   .card-input-data {
@@ -215,6 +280,8 @@
   .card-input-data-error {
     color: var(--error);
     font-size: 16px;
+    width: 200%;
+    height: 25px;
   }
 
   .card-input-icon {
@@ -222,7 +289,7 @@
 
     padding: 4px;
 
-    transition: color 1s;
+    transition: color 1s, margin .5s;
   }
 
   .card-input-icon-wrapper {
@@ -252,6 +319,25 @@
     right: 5px;
     font-size: 30px;
     cursor: pointer;
+  }
+
+  .login {
+    height: unset;
+    margin-top: 9%;
+  }
+
+  .login-button {
+    cursor: pointer;
+    border: .15vw solid var(--color-text);
+    border-radius: .5vw;
+    padding-bottom: unset;
+    padding: 2.5%;
+    margin-top: -1.25%;
+  }
+
+  .login-icon {
+    transition: color .3s;
+    transition-delay: .5s;
   }
 
 </style>

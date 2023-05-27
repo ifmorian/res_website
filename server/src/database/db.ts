@@ -48,6 +48,7 @@ const db: Database = new sqlite3.Database('./databases/database.db', (err: any) 
     name TEXT NOT NULL UNIQUE,
     game TEXT NOT NULL DEFAULT lol,
     prime_id TEXT,
+    bio TEXT,
     active INTEGER NOT NULL DEFAULT 1
   );`);
 });

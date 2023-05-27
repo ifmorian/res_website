@@ -13,9 +13,11 @@
             <div class="team-div">Primeleague Div. {{ team.div }}</div>
           </div>
         </div>
+        <!-- <img src="/src/assets/images/thunderstorm.gif" class="bg-storm"> -->
         <img :src="`/src/assets/logos/${team.logo}.png`" alt="" class="team-bg">
       </div>
     </div>
+    <!-- <img src="/src/assets/images/thunderstorm.gif" class="bg-storm2"> -->
   </section>
 </template>
 
@@ -144,7 +146,7 @@ import { ref } from 'vue';
 
   .title {
     font-size: 4em;
-    margin-left: 2%;
+    margin-left: 4%;
     margin-bottom: -1.5%;
     margin-top: -1%;
     font-family: 'Austere';
@@ -162,24 +164,25 @@ import { ref } from 'vue';
     height: 23vw;
     width: 0;
     overflow: hidden;
-    margin-right: 4%;
+    margin-right: 6%;
     background: var(--color-background);
     flex: 0 0 30vw;
-    transition: transform .2s;
+    transition: transform .2s, filter .2s;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transform-style: preserve-3d;
     transform: perspective(10vw) rotateX(0deg) rotateY(1deg) scale3d(1, 1, 1);
-    filter: drop-shadow(30px 30px black inset)
+    filter: drop-shadow(0 0 0 var(--primary));
   }
 
   .team:hover {
     transform: scale(1.04);
+    filter: drop-shadow(0 0 1vw var(--primary));
   }
 
   .team:first-child {
-    margin-left: 2%;
+    margin-left: 4%;
   }
 
   .team::after {
@@ -198,6 +201,7 @@ import { ref } from 'vue';
     height: 100%;
     width: 92%;
     margin: 0 auto;
+    margin-top: 4%;
     padding: 5% 10%;
     z-index: 4;
     overflow: hidden;
@@ -235,7 +239,7 @@ import { ref } from 'vue';
   }
 
   .row-div {
-    margin-top: 4%;
+    margin-top: 5%;
     transition-delay: unset;
   }
 
@@ -251,12 +255,12 @@ import { ref } from 'vue';
   }
 
   .team-rank {
-    font-size: 2.8em;
+    font-size: 2vw;
   }
 
   .team-name {
     text-align: center;
-    font-size: 4.6vw;
+    font-size: 3.7vw;
     font-family: 'Austere';
     width: 100%;
     transition: font-size .4s, width .4s, text-shadow .4s;
@@ -276,7 +280,7 @@ import { ref } from 'vue';
   }
 
   .team-div {
-    font-size: 2em;
+    font-size: 1.5vw;
   }
 
   .team-bg {
@@ -294,6 +298,29 @@ import { ref } from 'vue';
   .team:hover .team-bg {
     filter: drop-shadow(.3vw .3vw 0vw var(--color-background-soft));
     transition: filter .2s;
+  }
+
+  .bg-storm {
+    position: absolute;
+    bottom: -50%;
+    left: 0;
+    z-index: -1;
+    opacity: .02;
+    width: 180%;
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
+    filter: contrast(150%)
+  }
+
+  .bg-storm2 {
+    position: absolute;
+    /* bottom: -50%; */
+    left: 0;
+    top: 0;
+    z-index: -1;
+    opacity: .1;
+    width: 120%;
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
+    /* filter: contrast(150%) */
   }
 
 </style>

@@ -56,7 +56,7 @@ import BackgroundLight from './components/BackgroundLight.vue';
       <a href="/" class="home">Contact</a>
       <a href="/" class="home">Contact</a>
     </nav>
-    <a class="profile" @click="loggedIn = !loggedIn">
+    <a class="profile" href="/login">
       <span v-if="loggedIn" class="profile-picture"></span>
       <span v-else class="material-symbols-outlined profile-login">login</span>
     </a>
@@ -74,15 +74,21 @@ import AuthenticationService from './services/AuthenticationService';
     data() {
       return {
         scrolled: true,
-        loggedIn: true
+        loggedIn: false
       }
     },
     beforeCreate() {
       AuthenticationService.isloggedin().then(res => {
-        console.log(res.data)
+        if (res.data.login) {
+          this.loggedIn = true;
+          console.log(res.data);
+        } else {
+          this.loggedIn = false;
+          console.log(res.data)
+        }
       })
       .catch(err => {
-        console.log(err)
+        console.error(err);
       })
     },
     mounted() {
@@ -115,7 +121,7 @@ import AuthenticationService from './services/AuthenticationService';
 header {
   position: fixed;
   line-height: 1.5;
-  height: 14vh;
+  height: 6.5vw;
   width: 100vw;
   display: flex;
   justify-content: center;
@@ -130,8 +136,8 @@ header {
   content: '';
   left: 0; top: 0;
   width: 0%;
-  height: 14vh;
-  border-bottom: .5vh solid var(--primary);
+  height: 6.5vw;
+  border-bottom: .25vw solid var(--primary);
   pointer-events: none;
 }
 
@@ -152,18 +158,18 @@ header {
 
 .profile {
   position: absolute;
-  right: 5vh;
-  top: 4vh;
-  width: 6vh;
-  height: 6vh;
+  right: 0;
+  top: 0;
+  width: 6.5vw;
+  height: 6.5vw;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .profile-picture {
-  width: 100%;
-  height: 100%;
+  width: 50%;
+  height: 50%;
   background: var(--secondary);
   border-radius: 50%;
   outline: .4vh solid var(--color-text);
@@ -171,19 +177,24 @@ header {
 }
 
 .profile-login {
-  font-size: 5vh;
+  font-size: 2.3vw;
 }
 
 a {
   font-family: 'Austere';
-  font-size: 1.3vw;
+  font-size: 1.5vw;
   cursor: pointer;
+  transition: color .2s;
+}
+
+a:hover {
+  color: var(--secondary)
 }
 
 .logo-wrapper {
   position: relative;
-  width: 12vh;
-  height: 12vh;
+  width: 5.5vw;
+  height: 5.5vw;
   border-radius: 50%;
   transition: .4s;
 }
@@ -193,7 +204,7 @@ a {
   width: 95%;
   height: 50%;
   left: 2.5%;
-  top: 1vh;
+  top: .7vw;
 }
 
 
