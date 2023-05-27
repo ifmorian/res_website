@@ -25,8 +25,7 @@ import MagicText from '../components/MagicText.vue';
                 name="username"
                 placeholder="username"
                 class="card-input-data-input"
-                @click="() => usernameActive = true"
-                @blur="() => {playInputAnimation(0)}"
+                @blur="() => {addAnimation(playUsernameInputAnimation)}"
                 @input="() => ($refs.usernameIcon as HTMLSpanElement).style.color = 'unset'"
               >
               <span class="card-input-data-input-border"></span>
@@ -50,8 +49,7 @@ import MagicText from '../components/MagicText.vue';
                 name="password"
                 :type="passwordVisible ? 'text' : 'password'"
                 class="card-input-data-input"
-                @click="() => passwordActive = true"
-                @blur="() => {playInputAnimation(1)}"
+                @blur="() => {addAnimation(playPasswordInputAnimation)}"
                 @input="() => ($refs.passwordIcon as HTMLSpanElement).style.color = 'unset'"
               >
               <span class="card-input-data-input-border"></span>
@@ -89,74 +87,72 @@ import MagicText from '../components/MagicText.vue';
             username: "",
             password: "",
             passwordVisible: false,
-            usernameActive: false,
-            passwordActive: false,
+            animationTasks: Array<CallableFunction>(),
         };
     },
     methods: {
+      addAnimation(f: CallableFunction) {
+        this.animationTasks.push(f);
+        console.log(this.animationTasks)
+        if (this.animationTasks.length === 1) this.animationTasks[0]();
+      },
+      runAnimation() {
+        this.animationTasks.shift();
+        if (this.animationTasks[0]) this.animationTasks[0]();
+      },
       checkUsername() {
         return this.username !== '';
       },
       checkPassword() {
         return (this.password !== '' && this.password.length > 6);
       },
-      playInputAnimation(el: number) {
-          const duration = 700;
-          switch (el) {
-              case 0: {
-                  if (this.username === "")
-                      return (this.$refs.usernameIcon as HTMLSpanElement).style.color = "unset";
-                  (this.$refs.usernameBorder as SVGElement).animate([
-                      { transform: "rotate(600deg)" }
-                  ], {
-                      duration: duration,
-                  }).play();
-                  (this.$refs.usernameBorderCircle as SVGElement).animate([
-                      { strokeDashoffset: "0", strokeWidth: 0 }
-                  ], {
-                      duration: duration,
-                  }).play();
-                  (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--secondary)";
-        console.log(this.usernameActive)
-                  setTimeout(() => {this.usernameActive = false}, 500);
-                  break;
-              }
-              case 1: {
-                  if (this.password === "")
-                      return (this.$refs.passwordIcon as HTMLSpanElement).style.color = "unset";
-                  (this.$refs.passwordBorder as SVGElement).animate([
-                      { transform: "rotate(600deg)" }
-                  ], {
-                      duration: duration,
-                  }).play();
-                  (this.$refs.passwordBorderCircle as SVGElement).animate([
-                      { strokeDashoffset: "-5%", strokeWidth: 0 }
-                  ], {
-                      duration: duration,
-                  }).play();
-                  console.log(this.$refs.passwordIcon);
-                  (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--secondary)";
-                  setTimeout(() => {this.passwordActive = false}, 200);
-                  break;
-              }
-          }
+      playUsernameInputAnimation() {
+        const duration = 700;
+        if (this.username === "") {
+          this.runAnimation()
+          return (this.$refs.usernameIcon as HTMLSpanElement).style.color = "unset";
+        }
+        (this.$refs.usernameBorder as SVGElement).animate([
+            { transform: "rotate(600deg)" }
+        ], {
+            duration: duration,
+        }).play();
+        const animation = (this.$refs.usernameBorderCircle as SVGElement).animate([
+            { strokeDashoffset: "0", strokeWidth: 0 }
+        ], {
+            duration: duration,
+        });
+        animation.addEventListener("finish", () => {
+          this.runAnimation();
+        });
+        animation.play();
+        (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--secondary)";
       },
-      login() {
-        setTimeout(() => {
-          console.log(this.usernameActive || this.passwordActive)
-          let u = this.checkUsername();
-          let p = this.checkPassword();
-          this.playLoginAnimation(false);
-          if (!u || !p) {
-            setTimeout(() => {
-              if (!u) (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--error)";
-              if (!p) (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--error)";
-              this.playLoginAnimation(true);
-            }, 800);
-          }
-        }, (this.usernameActive || this.passwordActive) ? 500 : 0);
-        this.usernameActive = false;
-        this.passwordActive = false;
+      playPasswordInputAnimation() {
+        const duration = 700;
+        if (this.password === "") {
+          this.runAnimation()
+          return (this.$refs.passwordIcon as HTMLSpanElement).style.color = "unset";
+        }
+        (this.$refs.passwordBorder as SVGElement).animate([
+            { transform: "rotate(600deg)" }
+        ], {
+            duration: duration,
+        }).play();
+        const animation = (this.$refs.passwordBorderCircle as SVGElement).animate([
+            { strokeDashoffset: "-5%", strokeWidth: 0 }
+        ], {
+            duration: duration,
+        });
+        animation.addEventListener("finish", () => this.runAnimation());
+        animation.play();
+        (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--secondary)";
+      },
+      credsDown() {
+        this.playLoginAnimation(false);
+      },
+      credsUp() {
+        this.playLoginAnimation(true);
       },
       playLoginAnimation(reverse: boolean) {
         const timingOptions: KeyframeAnimationOptions = {
@@ -165,18 +161,36 @@ import MagicText from '../components/MagicText.vue';
           fill: "forwards",
           direction: reverse ? "reverse" : "normal"
         };
-        const animation1 = (this.$refs.usernameIcon as HTMLSpanElement).animate([
+        (this.$refs.usernameIcon as HTMLSpanElement).animate([
           {marginTop: "0", opacity: 1},
           {marginTop: "15vw", opacity: 0}
-        ], timingOptions);
-        const animation2 = (this.$refs.passwordIcon as HTMLSpanElement).animate([
+        ], timingOptions).play();
+        const animation = (this.$refs.passwordIcon as HTMLSpanElement).animate([
           {marginTop: "0", opacity: 1},
           {marginTop: "10vw", opacity: 0}
         ], timingOptions);
 
-        animation1.play();
-        animation2.play();
-      }
+        animation.addEventListener("finish", () => this.runAnimation());
+        animation.play();
+      },
+      login() {
+        if (document.hasFocus() && document.activeElement) {
+          let el = document.activeElement as HTMLInputElement
+          el.blur();
+        }
+        setTimeout(() => {
+          let u = this.checkUsername();
+          let p = this.checkPassword();
+          this.addAnimation(this.credsDown);
+          if (!u || !p) {
+            setTimeout(() => {
+              if (!u) (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--error)";
+              if (!p) (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--error)";
+              this.addAnimation(this.credsUp);
+            }, 800);
+          }
+        }, 0);
+      },
     },
     components: { MagicText }
 }
