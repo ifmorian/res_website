@@ -14,7 +14,7 @@
           </div>
         </div>
         <!-- <img src="/src/assets/images/thunderstorm.gif" class="bg-storm"> -->
-        <img :src="`/src/assets/logos/${team.logo}.png`" alt="" class="team-bg">
+        <img :src="`/src/assets/images/logos/${team.logo}.png`" alt="" class="team-bg">
       </div>
     </div>
     <!-- <img src="/src/assets/images/thunderstorm.gif" class="bg-storm2"> -->
@@ -270,7 +270,7 @@ import { ref } from 'vue';
   .team:hover .team-name {
     width: 0;
     transition: font-size .4s, width .7s;
-    text-shadow: 0px 0px .5vw rgba(109, 206, 178, .8);
+    /* text-shadow: 0px 0px .3vw rgba(109, 206, 178, .8); */
   }
 
   .team-rank-image {

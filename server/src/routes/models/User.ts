@@ -10,18 +10,20 @@ module.exports = async (
   return new Promise(async (resolve, reject) => {
     let errorCode = 1;
     if (!credentials.username) errorCode *= 2;
+    if (credentials.username.length > 64) errorCode *= 23
     if (!credentials.email) errorCode *= 3;
+    else if (!(emailReg.test(credentials.email))) errorCode *= 13;
     if (!credentials.password) errorCode *= 5;
-    if (credentials.password !== credentials.passwordRepeat) errorCode *= 7;
-    if(!(emailReg.test(credentials.email))) errorCode *= 11;
+    if (!credentials.passwordRepeat) errorCode *= 7;
+    if (credentials.password !== credentials.passwordRepeat) errorCode *= 11;
     await db.userExists(credentials.username)
       .then((result: boolean) => {
-        if (result) errorCode *= 13;
+        if (result) errorCode *= 17;
       })
       .catch((err: Error) => reject(err));
     await db.emailExists(credentials.email)
       .then((result: boolean) => {
-        if (result) errorCode *= 17;
+        if (result) errorCode *= 19;
       })
       .catch((err: Error) => reject(err));
   

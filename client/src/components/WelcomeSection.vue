@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import MagicText from '../components/MagicText.vue';
+
 </script>
 
 <template>
@@ -8,9 +8,16 @@
     <div class="bg-img"></div>
     <div class="content-wrapper">
 
-      <div class="text-wrapper">
-        <div class="text" id="text1"></div>
-        <div class="text" id="text2">Um Dennis jeden Tag aufs Neue<br>in den <MagicText size="inherit" text="Arsch"/> zu ficken.</div>
+      <div ref="text" class="text" id="text1">
+        <span>{{ texts[0] }}</span>
+        <span ref="w0" class="switchingword">{{ words[0] }}</span>
+        <span>{{ texts[1] }}</span>
+        <span ref="w1" class="switchingword w1">{{ words[1] }}</span>
+        <br>
+        <span>{{ texts[2] }}</span>
+        <span ref="w2" class="switchingword w2">{{ words[2] }}</span>
+        <span>{{ texts[3] }}</span>
+        <span ref="w3" class="switchingword">{{ words[3] }}</span>
       </div>
 
       <div class="cta">Werde Teil von&nbsp;<span class="font-austere"><span class="first-letter">R</span>ES</span><span class="material-symbols-outlined arrow">arrow_right_alt</span></div>
@@ -20,32 +27,76 @@
 </template>
 
 <script lang="ts">
-  export default {
-    mounted() {
-      const el1 = document.getElementById('text1') as HTMLDivElement;
-      const text = 'Um Dennis jeden Tag aufs Neue in den Arsch zu ficken.'
-      const speed = 60;
-      window.addEventListener('load', () => {
-        write(0);
-      });
-      function write(i: number) {
-        if (i >= text.length) {
-          return;
-        };
 
-        if (i > 36 && i < 43) {
-          el1.innerHTML = el1.innerHTML.substring(0, 41) + `<span class="magic" data-v-5a451c92="">${text.substring(36, i + 1)}</span>`;
-        } else {
-          if (i == 43) {
-            (document.querySelector('.magic') as HTMLDivElement).style.visibility = 'hidden';
-            (document.getElementById('text2') as HTMLDivElement).style.visibility = 'visible';
+  const speed = 100;
+
+  const timer = () => {
+    return new Promise(resolve => setTimeout(resolve, speed + Math.random() * 60 - 30));
+  }
+
+  export default {
+    data() {
+      return {
+        words: ['', '', '', ''],
+        texts: ['', '', '', ''],
+        timeout: 0,
+        words1: [
+          ['passion', 'success'],
+          ['diversity', 'community'],
+          ['ambition', 'unstoppable'],
+        ],
+        words2: [
+          ['dreams', 'reality'],
+          ['goals', 'a journey'],
+          ['friends', 'a team'],
+          ['skills', 'nature'],
+        ],
+        n1: 2,
+        n2: 0,
+      }
+    },
+    methods: {
+      async writeWord(i: number): Promise<void> {
+        return new Promise(async resolve => {
+          const word = i < 2 ? this.words1[this.n1][i % 2] : this.words2[this.n2][i % 2];
+          const a = this.words[i].split('');
+          for (let j = 0; j < Math.max(word.length, a.length); j++) {
+            a[j] = word[j] !== undefined ? word[j] : '\xa0';
+            this.words[i] = a.join('');
+            await timer();
           }
-          el1.innerHTML += text[i];
+          resolve();
+        });
+      }
+    },
+    async mounted() {
+      this.$nextTick(async () => {
+        const text = ['where', 'becomes', 'and', 'become'];
+
+        for (let i = 0; i < text.length; i++) {
+          for (let j = 0; j < text[i].length; j++) {
+            this.texts[i] += text[i][j];
+            await timer();
+          }
+          await this.writeWord(i);
         }
 
-        if (i === 28) el1.innerHTML += '<br>';
-        setTimeout(() => write(i + 1), speed + Math.random() * 60 - 30);
-      }
+        const intervalF = () => {
+          this.n1 = Math.floor(Math.random() * this.words1.length);
+          this.writeWord(0);
+          this.writeWord(1);
+          setTimeout(() => {
+            this.n2 = Math.floor(Math.random() * this.words2.length);
+            this.writeWord(2);
+            this.writeWord(3);
+          }, 3000);
+          this.timeout = setTimeout(intervalF, 6000);
+        };
+        intervalF();
+      })
+    },
+    unmounted() {
+      window.clearTimeout(this.timeout);
     }
   }
 </script>
@@ -98,48 +149,38 @@
     margin-right: 10%;
   }
 
-  .text-wrapper {
-    width: 50%;
-  }
-
   .text {
-    width: 100%;
+    width: 60%;
     height: 3.4em;
     line-height: 1.7em;
-    color: var(--color-text);
-    font-size: 3.5em;
+    color: var(--primary);
+    font-size: 2.5vw;
     font-family: 'Ubuntu Mono', 'Courier New', Courier, monospace;
   }
 
-  #text2 {
-    position: absolute;
-    top: 0; left: 0;
-    visibility: hidden;
-    color: transparent;
+  .switchingword {
+    display: inline-flex;
+    margin-left: 1.5vw;
+    width: 13vw;
+
+    font-weight: bold;
+    color: var(--color-text)
   }
 
-  .magic {
-    background: linear-gradient(
-      to right,
-      rgb(123, 31, 162),
-      rgb(103, 58, 183),
-      rgb(244, 143, 177),
-      rgb(123, 31, 162)
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    white-space: nowrap;
-    background-size: 200%;
-    background-position: 0 -100%;
+  .w1 {
+    width: 14vw;
+  }
+
+  .w2 {
+    width: 10vw;
   }
 
   .cta {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 500px;
-    height: 70px;
+    width: 30vw;
+    height: 4.3vw;
     color: var(--color-background-mute);
     background: var(--secondary);
     right: -3%;
@@ -156,7 +197,6 @@
     background: var(--primary);
     color: var(--color-text);
     border: 3px solid var(--secondary);
-    transform: scale(1.05);
   }
 
   .arrow {

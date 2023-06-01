@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import AuthenticationService from '@/services/AuthenticationService';
 import MagicText from '../components/MagicText.vue';
+import router from '@/router';
+import store from '@/store';
 </script>
 
 <template>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <div class="base">
     <div class="card">
-      <div class="card-title" id="input-parent">Login</div>
+      
+      <div class="card-head">
+        <div class="card-title" id="input-parent">Sign in</div>
+        <a @click="() => $router.push('/register')" class="card-head-link">Sign up</a>
+      </div>
 
       <form method="dialog">
 
@@ -23,14 +30,20 @@ import MagicText from '../components/MagicText.vue';
                 type="text"
                 v-model="username"
                 name="username"
-                placeholder="username"
+                placeholder="username/email"
                 class="card-input-data-input"
-                @blur="() => {addAnimation(playUsernameInputAnimation)}"
-                @input="() => ($refs.usernameIcon as HTMLSpanElement).style.color = 'unset'"
+                autofocus
+                @blur="() => {checkUsername()}"
+                @input="() => {
+                  ($refs.usernameIcon as HTMLSpanElement).style.color = 'unset';
+                  ($refs.usernameInputBorder as HTMLSpanElement).style.borderColor = 'unset';
+                  usernameError = '';
+                  loginError = '';
+                }"
               >
-              <span class="card-input-data-input-border"></span>
+              <span ref="usernameInputBorder" class="card-input-data-input-border"></span>
             </div>
-            <div class="card-input-data-error"></div>
+            <div class="card-input-data-error">{{ usernameError }}</div>
           </div>
         </div>
 
@@ -49,12 +62,17 @@ import MagicText from '../components/MagicText.vue';
                 name="password"
                 :type="passwordVisible ? 'text' : 'password'"
                 class="card-input-data-input"
-                @blur="() => {addAnimation(playPasswordInputAnimation)}"
-                @input="() => ($refs.passwordIcon as HTMLSpanElement).style.color = 'unset'"
+                @blur="() => {checkPassword()}"
+                @input="() => {
+                  ($refs.passwordIcon as HTMLSpanElement).style.color = 'unset';
+                  ($refs.passwordInputBorder as HTMLSpanElement).style.borderColor = 'unset';
+                  passwordError = '';
+                  loginError = '';
+                }"
               >
-              <span class="card-input-data-input-border"></span>
+              <span ref="passwordInputBorder" class="card-input-data-input-border"></span>
             </div>
-            <div class="card-input-data-error"></div>
+            <div class="card-input-data-error">{{ passwordError }}</div>
           </div>
           <span
             class="material-symbols-outlined card-input-icon-password"
@@ -66,11 +84,14 @@ import MagicText from '../components/MagicText.vue';
           </span>
         </div>
 
-        <div class="card-input login">
+        <div class="card-input submit">
           <div class="card-input-icon-wrapper">
-            <span ref="submitIcon" class="material-symbols-outlined card-input-icon login-icon">deployed_code</span>
+            <span ref="submitIcon" class="material-symbols-outlined card-input-icon submit-icon">deployed_code</span>
           </div>
-          <input type="submit" value="login" class="card-input-data-input login-button" @click="() => login()">
+          <div class="card-input-data">
+            <input type="submit" value="log in" class="card-input-data-input submit-button" @click="() => login()">
+            <div class="card-input-data-error">{{ loginError }}</div>
+          </div>
         </div>
 
       </form>
@@ -81,19 +102,27 @@ import MagicText from '../components/MagicText.vue';
 
 <script lang="ts">
 
+  const timer = async (ms: number): Promise<void> => {
+    return new Promise(resolve => {
+      setTimeout(() => resolve(), ms);
+    });
+  };
+
   export default {
     data() {
         return {
             username: "",
+            usernameError: "",
             password: "",
+            passwordError: "",
             passwordVisible: false,
             animationTasks: Array<CallableFunction>(),
+            loginError: "",
         };
     },
     methods: {
       addAnimation(f: CallableFunction) {
         this.animationTasks.push(f);
-        console.log(this.animationTasks)
         if (this.animationTasks.length === 1) this.animationTasks[0]();
       },
       runAnimation() {
@@ -101,23 +130,53 @@ import MagicText from '../components/MagicText.vue';
         if (this.animationTasks[0]) this.animationTasks[0]();
       },
       checkUsername() {
-        return this.username !== '';
+        if (this.username === '') {
+          this.usernameError = 'Can\'t be empty.';
+        } else {
+          return this.addAnimation(this.playUsernameInputAnimation);
+        }
+        (this.$refs.usernameIcon as HTMLSpanElement).style.color = 'var(--error)';
+        (this.$refs.usernameInputBorder as HTMLSpanElement).style.borderColor = 'var(--error)';
       },
       checkPassword() {
-        return (this.password !== '' && this.password.length > 6);
+        if (this.password === '') {
+          this.passwordError = 'Can\'t be empty.';
+        } else if (this.password.length < 8) {
+          this.passwordError = 'Must be at least 8 characters.';
+        } else {
+          return this.addAnimation(this.playPasswordInputAnimation);
+        }
+        (this.$refs.passwordIcon as HTMLSpanElement).style.color = 'var(--error)';
+        (this.$refs.passwordInputBorder as HTMLSpanElement).style.borderColor = 'var(--error)';
       },
       playUsernameInputAnimation() {
+        this.playInputAnimation(
+          this.username,
+          this.$refs.usernameIcon as HTMLSpanElement,
+          this.$refs.usernameBorder as SVGElement,
+          this.$refs.usernameBorderCircle as SVGElement
+        );
+      },
+      playPasswordInputAnimation() {
+        this.playInputAnimation(
+          this.password,
+          this.$refs.passwordIcon as HTMLSpanElement,
+          this.$refs.passwordBorder as SVGElement,
+          this.$refs.passwordBorderCircle as SVGElement
+        );
+      },
+      playInputAnimation(field: string, icon: HTMLSpanElement, border: SVGElement, borderCircle: SVGElement) {
         const duration = 700;
-        if (this.username === "") {
+        if (field === "") {
           this.runAnimation()
-          return (this.$refs.usernameIcon as HTMLSpanElement).style.color = "unset";
+          return icon.style.color = "unset";
         }
-        (this.$refs.usernameBorder as SVGElement).animate([
+        border.animate([
             { transform: "rotate(600deg)" }
         ], {
             duration: duration,
         }).play();
-        const animation = (this.$refs.usernameBorderCircle as SVGElement).animate([
+        const animation = borderCircle.animate([
             { strokeDashoffset: "0", strokeWidth: 0 }
         ], {
             duration: duration,
@@ -126,27 +185,7 @@ import MagicText from '../components/MagicText.vue';
           this.runAnimation();
         });
         animation.play();
-        (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--secondary)";
-      },
-      playPasswordInputAnimation() {
-        const duration = 700;
-        if (this.password === "") {
-          this.runAnimation()
-          return (this.$refs.passwordIcon as HTMLSpanElement).style.color = "unset";
-        }
-        (this.$refs.passwordBorder as SVGElement).animate([
-            { transform: "rotate(600deg)" }
-        ], {
-            duration: duration,
-        }).play();
-        const animation = (this.$refs.passwordBorderCircle as SVGElement).animate([
-            { strokeDashoffset: "-5%", strokeWidth: 0 }
-        ], {
-            duration: duration,
-        });
-        animation.addEventListener("finish", () => this.runAnimation());
-        animation.play();
-        (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--secondary)";
+        icon.style.color = "var(--secondary)";
       },
       credsDown() {
         this.playLoginAnimation(false);
@@ -178,18 +217,33 @@ import MagicText from '../components/MagicText.vue';
           let el = document.activeElement as HTMLInputElement
           el.blur();
         }
-        setTimeout(() => {
-          let u = this.checkUsername();
-          let p = this.checkPassword();
-          this.addAnimation(this.credsDown);
-          if (!u || !p) {
-            setTimeout(() => {
-              if (!u) (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--error)";
-              if (!p) (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--error)";
-              this.addAnimation(this.credsUp);
-            }, 800);
+        this.addAnimation(this.credsDown);
+        Promise.all([timer(this.animationTasks.length === 1 ? 800 : 1300), AuthenticationService.login({
+          identifier: this.username,
+          password: this.password
+        })]).then(value => {
+          const errorCode = value[1].data.errorCode;
+          if (errorCode === 1) {
+            //@ts-ignore
+            this.$updateSession();
+            store.notification.value.message = 'Logged in successfully!'
+            store.notification.value.success = true;
+            store.notification.value.notificate = !store.notification.value.notificate;
+            return router.push('/');
           }
-        }, 0);
+          if (errorCode === 2) {
+            (this.$refs.usernameIcon as HTMLSpanElement).style.color = "var(--error)";
+            this.usernameError = 'Username or Email does not exist.'
+          }
+          if (errorCode === 3) {
+            (this.$refs.passwordIcon as HTMLSpanElement).style.color = "var(--error)";
+            this.passwordError = 'Wrong password.';
+          }
+          this.addAnimation(this.credsUp);
+        }).catch(() => {
+          this.loginError = 'Something went wrong. Please try again.'
+          this.addAnimation(this.credsUp);
+        });
       },
     },
     components: { MagicText }
@@ -197,161 +251,5 @@ import MagicText from '../components/MagicText.vue';
 </script>
 
 <style scoped>
-  .material-symbols-outlined {
-    user-select: none;
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 300,
-    'GRAD' 0,
-    'opsz' 48;
-  }
-  .base {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 12vw;
-  }
-
-  .card {
-    width: 50%;
-    height: 30vw;
-    padding: 1.7% 4%;
-    background: var(--color-background-mute);
-    opacity: .8;
-    margin-bottom: 10%;
-  }
-
-  .card-title {
-    font-size: 250%;
-  }
-
-  form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 5%;
-    margin-bottom: 5%;
-  }
-
-  .card-input {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-
-    width: 50%;
-    height: 4vw;
-
-    margin-bottom: 1vw;
-  }
-
-  .card-input-data {
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-  }
-
-  .card-input-data-input-wrapper {
-    position: relative;
-
-    width: 100%;
-    height: 36px;
-    margin-bottom: 1%;
-    
-    border-bottom: 2px solid var(--color-background);
-  }
-
-  .card-input-data-input {
-    color: var(--color-text);
-    font-size: 24px;
-    background: transparent;
-
-    width: 100%;
-    height: calc(100% + 2px);
-
-    padding-bottom: 8px;
-
-    border: none;
-    outline: none;
-  }
-
-  .card-input-data-input-border {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: calc(100% + 2px);
-    border-bottom: 2px solid var(--secondary);
-    transition: width .3s;
-  }
-
-  .card-input-data-input:focus ~ .card-input-data-input-border {
-    width: 100%;
-  }
-
-  .card-input-data-error {
-    color: var(--error);
-    font-size: 16px;
-    width: 200%;
-    height: 25px;
-  }
-
-  .card-input-icon {
-    font-size: 30px;
-
-    padding: 4px;
-
-    transition: color 1s, margin .5s;
-  }
-
-  .card-input-icon-wrapper {
-    position: relative;
-    margin-right: 14px;
-    height: 100%;
-  }
-
-  .card-input-icon-border {
-    position: absolute;
-    top: -10%;
-    left: -10%;
-    width: 120%;
-    transform: rotate(0deg);
-  }
-
-  .card-input-icon-border circle {
-    stroke-width: .1;
-    stroke: var(--secondary);
-    fill: none;
-    stroke-dasharray: 270%;
-    stroke-dashoffset: 270%;
-  }
-
-  .card-input-icon-password {
-    position: absolute;
-    right: 5px;
-    font-size: 30px;
-    cursor: pointer;
-  }
-
-  .login {
-    height: unset;
-    margin-top: 9%;
-  }
-
-  .login-button {
-    cursor: pointer;
-    border: .15vw solid var(--color-text);
-    border-radius: .5vw;
-    padding-bottom: unset;
-    padding: 2.5%;
-    margin-top: -1.25%;
-  }
-
-  .login-icon {
-    transition: color .3s;
-    transition-delay: .5s;
-  }
-
+  @import url('../assets/styles/form.css');
 </style>

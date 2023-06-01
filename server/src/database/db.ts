@@ -78,14 +78,28 @@ module.exports = {
     return new Promise((resolve, reject) => {
       let sql: string = `SELECT * FROM ${USERTABLE} WHERE (username=? OR email=?)`;
       db.get(sql, [credentials.identifier, credentials.identifier], (err: Error, row: UserInterface): void => {
-        if (err) return reject(0); console.error(err);
+        if (err) {
+          console.error(err);
+          return reject(0);
+        }
         if (!row) return reject(2);
         bcrypt.compare(credentials.password, row.password, (err: Error, result: boolean) => {
-          if (err) reject(0); console.error(err);
-          result ? reject(1) : resolve(row);
+          if (err) {
+            console.error(err);
+            reject(0);
+          }
+          result ? resolve(row) : reject(3);
         });
       });
     })
+  },
+  setGamertag: async (id: number, gamertag: string): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      let sql: string = `UPDATE ${USERTABLE} SET display_name=? WHERE id=?`;
+      db.all(sql, [gamertag, id], (err: Error): void => {
+        err ? reject(err) : resolve(true);
+      });
+    });
   },
   userExists: async (username: string): Promise<boolean> => {
     return exists(username, 'username');

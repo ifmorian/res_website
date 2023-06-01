@@ -39,11 +39,12 @@ module.exports =  {
       password: req.body.password
     })
       .then((user: UserInterface) => {
-        let session = req.session;
-        session.user_id = user.id;
-        res.status(200).json({
-          errorCode: 1
-        }).end();
+        req.session.user_id = user.id;
+        req.session.save(() => {
+          res.status(200).json({
+            errorCode: 1
+          }).end();
+        });
       })
       .catch((errorCode: number) => {
         if (errorCode === 0) return res.status(500).end();
@@ -65,8 +66,27 @@ module.exports =  {
 
   async isLoggedIn(req: Request, res: Response) {
     res.status(200).send({
-      login: req.session.user_id
+      userId: req.session.user_id
     }).end();
+  },
+
+  async gamertag(req: Request, res: Response) {
+    if (!req.session.user_id) {
+      return res.status(200).json({
+        errorCode: 3
+      }).end();
+    }
+    if (!req.body.gamertag) {
+      return res.status(200).json({
+        errorCode: 2
+      }).end()
+    }
+    db.setGamertag(req.session.user_id, req.body.gamertag).then((success: boolean) => {
+      if (!success) return res.status(500).end();
+      res.status(200).json({
+        errorCode: 1
+      }).end();
+    })
   }
 
 }

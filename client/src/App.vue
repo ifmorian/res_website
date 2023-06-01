@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import router from './router';
 import BackgroundLight from './components/BackgroundLight.vue';
+import store from './store';
+import AuthenticationService from './services/AuthenticationService';
+import { watch, type Ref } from 'vue';
 </script>
 
 <template>
@@ -41,8 +45,8 @@ import BackgroundLight from './components/BackgroundLight.vue';
   
   <header>
     <nav class="nav">
-      <a href="/" class="home">Home</a>
-      <a href="/" class="home">Teams</a>
+      <a class="home" @click="() => router.push('/')">Home</a>
+      <a @click="() => {}" class="home">Teams</a>
       <a href="/" class="home">Stream</a>
     </nav>
     <div class="logo-wrapper">
@@ -56,42 +60,138 @@ import BackgroundLight from './components/BackgroundLight.vue';
       <a href="/" class="home">Contact</a>
       <a href="/" class="home">Contact</a>
     </nav>
-    <a class="profile" href="/login">
-      <span v-if="loggedIn" class="profile-picture"></span>
-      <span v-else class="material-symbols-outlined profile-login">login</span>
-    </a>
+    <div class="profile d">
+      <span v-if="store.userId.value" class="profile-picture"></span>
+      <span v-else class="material-symbols-outlined profile-login" @click="() => router.push('/login')">login</span>
+      <div v-if="store.userId.value" class="profile-dropdown dropdown d3">
+        <a @click="() => router.push('/profile')" class="dropdown-option">
+          <span class="material-symbols-outlined dropdown-option-icon dropdown-option-item">account_circle</span>
+          <div class="dropdown-option-name dropdown-option-item">Profile</div>
+        </a>
+        <a @click="() => router.push('/settings')" class="dropdown-option">
+          <span class="material-symbols-outlined dropdown-option-icon dropdown-option-item">settings</span>
+          <div class="dropdown-option-name dropdown-option-item">Settings</div>
+        </a>
+        <a @click="() => {
+          AuthenticationService.logout().then(() => {
+            store.notification.value.message = 'Logged out!';
+            store.notification.value.success = true;
+            store.notification.value.notificate = !store.notification.value.notificate;
+            //@ts-ignore
+            this.$updateSession();
+          }).catch(err => {
+            
+          })
+        }" class="dropdown-option">
+          <span class="material-symbols-outlined dropdown-option-icon dropdown-option-item">logout</span>
+          <div class="dropdown-option-name dropdown-option-item">Log out</div>
+        </a>
+      </div>
+      <div v-else class="profile-dropdown dropdown d2">
+        <a @click="() => router.push('/login')" class="dropdown-option">
+          <span class="material-symbols-outlined dropdown-option-icon dropdown-option-item">login</span>
+          <div class="dropdown-option-name dropdown-option-item">Sign in</div>
+        </a>
+        <a @click="() => router.push('/register')" class="dropdown-option">
+          <span class="material-symbols-outlined dropdown-option-icon dropdown-option-item">person_add</span>
+          <div class="dropdown-option-name dropdown-option-item">Sign up</div>
+        </a>
+      </div>
+    </div>
     <div id="header-border"></div>
   </header>
 
   <RouterView />
 
+  <div
+    ref="notification"
+    class="notification"
+    @mouseenter="() => clearNotification()"
+    :style="{color: store.notification.value.success ? 'var(--secondary)' : 'var(--error)'}"
+  >
+    {{ store.notification.value.message }}
+  </div>
+
+  <footer>
+    <div class="footer-wrapper">
+      <div class="footer-section">
+        <div class="footer-section-title">Rechtliches</div>
+        <div class="footer-section-content">
+          <a href="" class="footer-section-content-link">
+            Datenschutzerklärung
+            <div class="footer-section-content-link-border"></div>
+          </a>
+          <a href="" class="footer-section-content-link">
+            Impressum
+            <div class="footer-section-content-link-border"></div>
+          </a>
+          <!-- <a href="" class="footer-section-content-link">Stream</a> -->
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-section">
+        <div class="footer-section-title">Über RES Publica</div>
+        <div class="footer-section-content">
+          <a href="" class="footer-section-content-link">
+            About us
+            <div class="footer-section-content-link-border"></div>
+          </a>
+          <a href="" class="footer-section-content-link">
+            Teams
+            <div class="footer-section-content-link-border"></div>
+          </a>
+          <a href="" class="footer-section-content-link">
+            Stream
+            <div class="footer-section-content-link-border"></div>
+          </a>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-section footer-socials">
+        <a target="_blank" href="https://www.instagram.com/res_publica_esport/" class="footer-socials-link">
+          <img src="./assets/images/socials/instagram.png" alt="">
+        </a>
+        <a target="_blank" class="footer-socials-link">
+          <img src="./assets/images/socials/twitter.png" alt="">
+        </a>
+        <a target="_blank" class="footer-socials-link">
+          <img src="./assets/images/socials/tiktok.png" alt="">
+        </a>
+        <a target="_blank" href="https://www.twitch.tv/res_publica_esport" class="footer-socials-link">
+          <img src="./assets/images/socials/twitch.png" alt="">
+        </a>
+      </div>
+    </div>
+    <small class="copyright">&copy; Copyright {{currentYear}}, Felix Kurz. All Rights Reserved</small>
+  </footer>
+
 </template>
 
 <script lang="ts">
-import AuthenticationService from './services/AuthenticationService';
 
   export default {
     data() {
       return {
-        scrolled: true,
-        loggedIn: false
+        notetificationTimer: NaN,
+        currentYear: new Date().getFullYear(),
       }
     },
-    beforeCreate() {
-      AuthenticationService.isloggedin().then(res => {
-        if (res.data.login) {
-          this.loggedIn = true;
-          console.log(res.data);
-        } else {
-          this.loggedIn = false;
-          console.log(res.data)
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      })
+    beforeMount() {
+      //@ts-ignore
+      this.$updateSession();
     },
     mounted() {
+      watch(() => store.notification.value.notificate, () => {
+        if (!Number.isNaN(this.notetificationTimer)) {
+          clearTimeout(this.notetificationTimer);
+        }
+        (this.$refs.notification as HTMLDivElement).style.visibility = 'visible';
+        (this.$refs.notification as HTMLDivElement).style.opacity = '1';
+        this.notetificationTimer = setTimeout(() => {
+          (this.$refs.notification as HTMLDivElement).style.visibility = 'hidden';
+          (this.$refs.notification as HTMLDivElement).style.opacity = '0';
+        }, 5000);
+      });
       const header = document.getElementById('header-border') as HTMLHeadElement;
       const resize = () => {
         header.style.width = window.scrollY / (document.body.scrollHeight - document.body.clientHeight) * 100 + '%';
@@ -99,7 +199,14 @@ import AuthenticationService from './services/AuthenticationService';
       window.addEventListener('scroll', () => resize());
       window.addEventListener('resize', () => resize());
     },
-}
+    methods: {
+      clearNotification() {
+        clearTimeout(this.notetificationTimer);
+        (this.$refs.notification as HTMLDivElement).style.visibility = 'hidden';
+        (this.$refs.notification as HTMLDivElement).style.opacity = '0';
+      }
+    }
+  }
 
 </script>
 
@@ -120,6 +227,8 @@ import AuthenticationService from './services/AuthenticationService';
 
 header {
   position: fixed;
+  opacity: .85;
+  top: 0;
   line-height: 1.5;
   height: 6.5vw;
   width: 100vw;
@@ -158,7 +267,7 @@ header {
 
 .profile {
   position: absolute;
-  right: 0;
+  right: 1vw;
   top: 0;
   width: 6.5vw;
   height: 6.5vw;
@@ -174,10 +283,22 @@ header {
   border-radius: 50%;
   outline: .4vh solid var(--color-text);
   display: inline-block;
+  cursor: pointer;
 }
 
 .profile-login {
   font-size: 2.3vw;
+  cursor: pointer;
+  transition: color .2s;
+}
+
+.profile-login:hover {
+  color: var(--secondary);
+}
+
+.profile-dropdown {
+  right: 0;
+  width: 15vw;
 }
 
 a {
@@ -188,7 +309,7 @@ a {
 }
 
 a:hover {
-  color: var(--secondary)
+  color: var(--secondary);
 }
 
 .logo-wrapper {
@@ -205,6 +326,202 @@ a:hover {
   height: 50%;
   left: 2.5%;
   top: .7vw;
+}
+
+
+.dropdown {
+  position: absolute;
+  top: 6.5vw;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: height .2s, opacity .2s;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown::before {
+  content: '';
+  height: .5vw;
+}
+
+.dropdown-option {
+  width: 100%;
+  height: auto;
+  flex: 1;
+
+  padding: 0 8%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  background: rgba(24, 24, 24, .7);
+  border-bottom: .15vw solid var(--color-text);
+  transition: border-color .2s;
+}
+
+.dropdown-option:hover {
+  border-color: var(--secondary);
+}
+
+.dropdown-option:last-child {
+  border: unset;
+}
+
+.dropdown-option-item {
+  filter: drop-shadow(0 0 0 rgb(10, 10, 10));
+  transition: filter .2s;
+}
+
+.dropdown-option:hover .dropdown-option-item {
+  filter: drop-shadow(.3vw .4vw .1vw rgb(10, 10, 10));
+}
+
+.dropdown-option-icon {
+  font-size: 1.8vw;
+
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-option-name {
+  font-size: 1.4vw;
+  font-family: 'Segoe UI', Inter, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.d:hover .dropdown {
+  opacity: 1;
+}
+
+.d:hover .d1 {height: 4vw;}
+.d:hover .d2 {height: 8vw;}
+.d:hover .d3 {height: 12vw;}
+.d:hover .d4 {height: 16vw;}
+.d:hover .d5 {height: 20vw;}
+
+
+.notification {
+  position: fixed;
+  z-index: 100;
+  bottom: 2vw;
+  right: 2vw;
+  width: 35vw;
+  font-size: 1.4vw;
+  padding: .6% 1.3%;
+  border-radius: .8vw;
+  background: var(--color-background-soft);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .5s, visibility .5s;
+  border: .11vw solid;  
+}
+
+footer {
+  width: 100vw;
+  height: 15vw;
+  background: var(--color-background-soft);
+
+  border-top: .3vw solid var(--color-background-mute);
+}
+
+.footer-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.copyright {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: .5vw;
+  text-align: center;
+}
+
+.footer-section {
+  width: 25%;
+  height: 70%;
+  padding: 0 5%;
+}
+
+.footer-socials {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.footer-socials-link {
+  width: 6vw;
+  height: 6vw;
+  padding: 2.5%;
+  cursor: pointer;
+}
+
+.footer-socials-link img {
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  /* filter: invert(13.2%); */
+  filter: invert(35%);
+}
+
+.footer-socials-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-background);
+  border-radius: 0.5vw;
+}
+
+.footer-divider {
+  width: .1%;
+  background: var(--color-text);
+  height: 50%;
+}
+
+.footer-section-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5%;
+}
+
+.footer-section-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-section-content-link {
+  font-family: unset;
+  font-size: 15px;
+  width: fit-content;
+}
+
+.footer-section-content-link-border {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2%;
+  width: 0;
+  transition: width .2s, color .2s;
+  background: var(--color-text);
+}
+
+.footer-section-content-link:hover .footer-section-content-link-border {
+  width: 100%;
+  background-color: var(--secondary);
 }
 
 

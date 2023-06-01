@@ -3,15 +3,18 @@ import Api from "./Api";
 
 export default {
   register(credentials: registerCredentials) {
-    return Api().post('register', credentials);
+    return Api().post('user/register', credentials);
   },
   login(credentials: loginCredentials) {
-    return Api().post('login', credentials);
+    return Api().post('user/login', credentials);
   },
   logout() {
-    return Api().post('logout');
+    return Api().post('user/logout');
   },
   isloggedin() {
     return Api().post('user/isloggedin');
   },
+  setGamertag(credentials: {gamertag: string}) {
+    return Api().post('user/gamertag', credentials);
+  }
 }

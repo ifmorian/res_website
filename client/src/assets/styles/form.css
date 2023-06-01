@@ -1,0 +1,197 @@
+material-symbols-outlined {
+  user-select: none;
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 300,
+  'GRAD' 0,
+  'opsz' 48;
+}
+
+.card {
+  width: 50%;
+  padding: 3% 4% 6% 4%;
+  height: 100%;
+  background: var(--color-background-mute);
+  opacity: .8;
+  margin-bottom: 10%;
+}
+
+.card-head {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3vw;
+}
+
+.card-title {
+  font-size: 230%;
+  font-family: 'Austere';
+}
+
+.card-head-link {
+  cursor: pointer;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5%;
+  margin-bottom: 1vw;
+}
+
+.card-input {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+
+  width: 50%;
+  height: 4vw;
+
+  margin-bottom: 1vw;
+}
+
+.card-input-info {
+  position: absolute;
+  left: -450%;
+  top: 20%;
+  width: 450%;
+  font-size: 9px;
+  border: 1px solid;
+  padding: 6px;
+  border-radius: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s, visibility .3s;
+}
+
+.card-input-icon-wrapper:hover .card-input-info {
+  opacity: 1;
+  visibility: visible;
+}
+
+.card-input-icon-info {
+  position: absolute;
+  top: 10%;
+  right: 0;
+  font-size: 40%;
+  color: var(--color-text);
+}
+
+.card-input-data {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+.card-input-data-input-wrapper {
+  position: relative;
+
+  width: 100%;
+  height: 36px;
+  margin-bottom: 1%;
+  
+  border-bottom: 2px solid var(--color-background);
+}
+
+.card-input-data-input {
+  color: var(--color-text);
+  font-size: 20px;
+  background: transparent;
+
+  width: 100%;
+  height: calc(100% + 2px);
+
+  padding-bottom: 8px;
+
+  border: none;
+  outline: none;
+}
+
+.card-input-data-input-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: calc(100% + 2px);
+  border-bottom: 2px solid var(--color-text);
+  transition: width .3s, border-color .5s;
+}
+
+.card-input-data-input:focus ~ .card-input-data-input-border {
+  width: 100%;
+}
+
+.card-input-data-error {
+  color: var(--error);
+  font-size: 16px;
+  width: 200%;
+  height: 25px;
+}
+
+.card-input-icon {
+  font-size: 30px;
+
+  padding: 4px;
+
+  transition: color .5s, margin .5s;
+}
+
+.card-input-icon-wrapper {
+  position: relative;
+  margin-right: 14px;
+  height: 40px;
+  width: 40px;
+}
+
+.card-input-icon-border {
+  position: absolute;
+  top: -15%;
+  left: -15%;
+  width: 130%;
+  transform: rotate(0deg);
+}
+
+.card-input-icon-border circle {
+  stroke-width: .1;
+  stroke: var(--secondary);
+  fill: none;
+  stroke-dasharray: 270%;
+  stroke-dashoffset: 270%;
+}
+
+.card-input-icon-password {
+  position: absolute;
+  right: 5px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.submit {
+  height: unset;
+  margin-top: 9%;
+}
+
+.submit-button {
+  cursor: pointer;
+  border: .15vw solid var(--color-text);
+  border-radius: .5vw;
+  padding-bottom: unset;
+  padding: 2.5%;
+  margin-top: -1.25%;
+  transition: border-color .2s, color .2s;
+}
+
+.submit-button:hover {
+  color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.submit-icon {
+  transition: color .3s;
+  transition-delay: .5s;
+}

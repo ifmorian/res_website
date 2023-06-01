@@ -72,7 +72,10 @@
   box-sizing: border-box;
   margin: 0;
   position: relative;
-  font-weight: normal;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -80,12 +83,13 @@ body {
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+  font-family: 'Segoe UI', Inter, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
 }
 
 input {
@@ -98,4 +102,12 @@ input {
 
 .font-austere {
   font-family: 'Austere';
+}
+
+.base {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 12vw;
+  min-height: 100%;
 }
