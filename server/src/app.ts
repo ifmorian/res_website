@@ -38,6 +38,8 @@ app.use(cookieParser());
 
 app.use('/', require('./routes/router'));
 
+app.use(express.static(__dirname + '/cache'));
+
 app.listen(PORT, () => {
   console.log(`Server listening on Port ${PORT}`);
 });
@@ -47,6 +49,16 @@ let dir = './databases'
 if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 
 require('./database/db.ts');
-require('./services/PrimeleagueScraper.ts').getGames('155034-ragequit-gaming').then((res: any) => {
-  console.log(res)
-}).catch((err: Error) => console.error(err.message));
+// require('./services/PrimeleagueScraper.ts').getGames('155034-ragequit-gaming').then((res: any) => {
+//   console.log(res)
+// }).catch((err: Error) => console.error(err.message));
+// require('./services/RiotDragonService').cacheChampionIcon('Shaco').then((res: string) => {
+//   console.log(res);
+// }).catch((err: Error) => {
+//   console.error(err)
+// })
+
+// require('./services/OpggScraper').getAccountData('l u n e z').then((res: any) => {
+//   console.log(res);
+//   // require('./services/RiotDragonService').cachePfp(res.pfpId).catch((err: Error) => console.error(err.message))
+// }).catch((err: Error) => console.log(err.message))

@@ -4,7 +4,7 @@ import router from './router';
 import BackgroundLight from './components/BackgroundLight.vue';
 import store from './store';
 import AuthenticationService from './services/AuthenticationService';
-import { watch, type Ref } from 'vue';
+import { watch } from 'vue';
 </script>
 
 <template>
@@ -505,11 +505,12 @@ footer {
 .footer-section-content-link {
   font-family: unset;
   font-size: 15px;
+  height: 100%;
   width: fit-content;
+  overflow: visible;
 }
 
 .footer-section-content-link-border {
-  content: '';
   position: absolute;
   bottom: 0;
   left: 0;

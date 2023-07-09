@@ -28,9 +28,10 @@
 
   --primary: rgb(0, 82, 76);
   --secondary: rgb(109, 206, 178);
+  --gold: rgb(255, 186, 113);
 
   --error: red;
-  --success: rgb(112, 228, 112);
+  /* --success: rgb(112, 228, 112); */
 }
 
 /* semantic color variables for this project */

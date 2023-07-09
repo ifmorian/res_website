@@ -14,6 +14,7 @@ module.exports = async (
     if (!credentials.email) errorCode *= 3;
     else if (!(emailReg.test(credentials.email))) errorCode *= 13;
     if (!credentials.password) errorCode *= 5;
+    if (credentials.password.length < 8) errorCode *= 29;
     if (!credentials.passwordRepeat) errorCode *= 7;
     if (credentials.password !== credentials.passwordRepeat) errorCode *= 11;
     await db.userExists(credentials.username)

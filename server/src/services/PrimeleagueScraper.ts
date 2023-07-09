@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 const Api = require('./Api');
 const cheerio = require('cheerio');
 
@@ -10,7 +12,7 @@ const PrimeApi = () => {
 const getTeamSite = async (teamId: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     PrimeApi().get('/leagues/teams/' + teamId).
-      then((res: any) => {
+      then((res: AxiosResponse) => {
         resolve(cheerio.load(res.data));
       })
       .catch((err: Error) => reject(err));

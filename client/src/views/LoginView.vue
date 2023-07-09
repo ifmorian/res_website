@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AuthenticationService from '@/services/AuthenticationService';
-import MagicText from '../components/MagicText.vue';
 import router from '@/router';
 import store from '@/store';
 </script>
@@ -194,6 +193,7 @@ import store from '@/store';
         this.playLoginAnimation(true);
       },
       playLoginAnimation(reverse: boolean) {
+        // eslint-disable-next-line no-undef
         const timingOptions: KeyframeAnimationOptions = {
           duration: 500,
           easing: "cubic-bezier(1,0,1,1)",
@@ -245,8 +245,7 @@ import store from '@/store';
           this.addAnimation(this.credsUp);
         });
       },
-    },
-    components: { MagicText }
+    }
 }
 </script>
 

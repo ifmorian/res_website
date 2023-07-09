@@ -4,9 +4,14 @@ import RegisterView from '../views/RegisterView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterGamertagView from '../views/RegisterGamertagView.vue';
 import SettingsView from '../views/SettingsView.vue';
+import ProfileView from '../views/ProfileView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(from, to) {
+    if (from.path === to.path) return;
+    return { top: 0 }
+  },
   routes: [
     {
       path: '/',
@@ -44,6 +49,11 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: SettingsView
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView
     }
   ]
 })

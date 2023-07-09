@@ -22,3 +22,11 @@ export interface Team {
   game: string,
   prime_id: string
 }
+
+export interface accountData {
+  name: string,
+  pfpId: string,
+  division: string,
+  tier: string,
+  level: string
+};
