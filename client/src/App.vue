@@ -236,7 +236,7 @@ header {
   justify-content: center;
   margin-bottom: 5%;
   background: var(--color-background-soft);
-  border-bottom: .5vh solid var(--secondary);
+  border-bottom: .25vw solid var(--secondary);
   z-index: 20;
 }
 

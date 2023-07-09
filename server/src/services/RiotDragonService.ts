@@ -42,7 +42,7 @@ const saveImage = async (res: AxiosResponse, path: string): Promise<void> => {
 }
 
 const cacheChampionIcon = async (key: string): Promise<void> => {
-  const path = './src/cache/lol/champion/' + key + '.png';
+  const path = './cache/lol/champion/' + key + '.png';
   return new Promise(async (resolve, reject) => {
     if (fs.existsSync(path)) return resolve();
     CDragonApi.get('plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + key + '.png', {
@@ -55,7 +55,7 @@ const cacheChampionIcon = async (key: string): Promise<void> => {
 }
 
 const cacheChampionSplash = async (key: string): Promise<void> => {
-  const path = './src/cache/lol/splash/' + key + '.jpg';
+  const path = './cache/lol/splash/' + key + '.jpg';
   return new Promise(async (resolve, reject) => {
     CDragonApi.get('plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/' + key + '/' + key + '000.jpg', {
       responseType: "stream"
@@ -67,7 +67,7 @@ const cacheChampionSplash = async (key: string): Promise<void> => {
 }
 
 const cachePfp = async (id: string): Promise<void> => {
-  const path = './src/cache/lol/pfp/' + id + '.png';
+  const path = './cache/lol/pfp/' + id + '.png';
   return new Promise(async (resolve, reject) => {
     if (fs.existsSync(path)) return resolve();
     CDragonApi.get('plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/' + id + '.jpg', {

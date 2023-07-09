@@ -196,7 +196,7 @@
                       <div class="champion-dropdown-wrapper" v-if="mainChamps[0].value !== ''" >
                         <div class="champion-dropdown" v-for="(value, key) in championList" :key="key">
                           <div class="champion-dropdown-option" v-if="value.name.toLowerCase().includes(mainChamps[0].value.toLowerCase())"
-                            @click="() => {
+                            @mousedown="() => {
                               //@ts-ignore
                               addMainChamp(value.name, value.key, 0)
                             }"
@@ -225,7 +225,7 @@
                       <div class="champion-dropdown-wrapper" v-if="mainChamps[1].value !== ''" >
                         <div class="champion-dropdown" v-for="(value, key) in championList" :key="key">
                           <div class="champion-dropdown-option" v-if="value.name.toLowerCase().includes(mainChamps[1].value.toLowerCase())"
-                            @click="() => {
+                            @mousedown="() => {
                               //@ts-ignore
                               addMainChamp(value.name, value.key, 1)
                             }"
@@ -254,7 +254,7 @@
                       <div class="champion-dropdown-wrapper" v-if="mainChamps[2].value !== ''" >
                         <div class="champion-dropdown" v-for="(value, key) in championList" :key="key">
                           <div class="champion-dropdown-option" v-if="value.name.toLowerCase().includes(mainChamps[2].value.toLowerCase())"
-                            @click="() => {
+                            @mousedown="() => {
                               //@ts-ignore
                               addMainChamp(value.name, value.key, 2)
                             }"
@@ -588,8 +588,9 @@
           const champion = Object.entries(this.championList).find((el: any) => el[1].key === this.mainChamps[index].key);
           if (!champion) return this.mainChamps[index].value = '';
           this.mainChamps[index].value = champion[1].name;
-        }, 200);
+        }, 20);
       },
+
       addMainChamp(name: string, key: string, number: number) {
         if (this.mainChamps[number].loading) return;
         this.mainChamps[number].error = '';

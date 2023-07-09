@@ -38,7 +38,7 @@ app.use(cookieParser());
 
 app.use('/', require('./routes/router'));
 
-app.use(express.static(__dirname + '/cache'));
+app.use(express.static('./cache'));
 
 app.listen(PORT, () => {
   console.log(`Server listening on Port ${PORT}`);
@@ -47,6 +47,13 @@ app.listen(PORT, () => {
 const fs = require('fs');
 let dir = './databases'
 if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+if (!fs.existsSync('./cache')) {
+  fs.mkdirSync('./cache');
+  fs.mkdirSync('./cache/lol');
+  fs.mkdirSync('./cache/lol/champion');
+  fs.mkdirSync('./cache/lol/pfp');
+  fs.mkdirSync('./cache/lol/splash');
+}
 
 require('./database/db.ts');
 // require('./services/PrimeleagueScraper.ts').getGames('155034-ragequit-gaming').then((res: any) => {
