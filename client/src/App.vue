@@ -10,7 +10,129 @@ import { watch } from 'vue';
 <template>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-  <div class="background">
+  <div class="background" :style="{backgroundImage: 'url(/src/assets/images/backgrounds/' + backgrounds[backgroundNumber] + '.gif)'}">
+    <div class="hexgrid" ref="hexgrid">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
     <BackgroundLight
       class="background-light"
       :stroke-width="7.5"
@@ -174,6 +296,8 @@ import { watch } from 'vue';
       return {
         notetificationTimer: NaN,
         currentYear: new Date().getFullYear(),
+        backgrounds: ["sorcery", "domination", "precision", "resolve", "inspiration"],
+        backgroundNumber: Math.floor(Math.random() * 5),
       }
     },
     beforeMount() {
@@ -192,12 +316,24 @@ import { watch } from 'vue';
           (this.$refs.notification as HTMLDivElement).style.opacity = '0';
         }, 5000);
       });
+
+      watch(() => this.$route, () => {
+        this.backgroundNumber = Math.floor(Math.random() * this.backgrounds.length);
+      })
+
       const header = document.getElementById('header-border') as HTMLHeadElement;
       const resize = () => {
         header.style.width = window.scrollY / (document.body.scrollHeight - document.body.clientHeight) * 100 + '%';
       }
       window.addEventListener('scroll', () => resize());
       window.addEventListener('resize', () => resize());
+
+      document.addEventListener('mousemove', (e) => {
+        let x = e.clientX + .05 * window.innerWidth;
+        let y = e.clientY + .05 * window.innerHeight;
+        let bg = "radial-gradient(circle farthest-corner at " + x + "px " + y + "px, transparent 0% 7%, rgba(0, 0, 0, .8) 15%";
+        (this.$refs.hexgrid as HTMLDivElement).style.backgroundImage = bg;
+      })
     },
     methods: {
       clearNotification() {
@@ -217,17 +353,53 @@ import { watch } from 'vue';
   position: fixed;
   top: 0; left: 0;
   width: 100vw;
-  aspect-ratio: 16 / 9;
+  height: 100vh;
   z-index: -1;
+  background-repeat: repeat;
+  background-size: cover;
+  background-position: 50% 100%;
 }
 
 .background-light {
   position: absolute;
 }
 
+.hexgrid {
+  width: 110%;
+  height: 110%;
+  left: -5%; top: -5%;
+  position: absolute;
+  font-size: 0;
+  --s: 100px;
+  --m: 4px;
+  --f: calc(1.732 * var(--s) + 4 * var(--m)  - 1px);
+  opacity: .4;
+}
+
+.hexgrid::before {
+  content: '';
+  width: calc(var(--s)/2 + var(--m));
+  float: left;
+  height: 120%;
+  shape-outside: repeating-linear-gradient(     
+                   #0000 0 calc(var(--f) - 3px),      
+                   #000  0 var(--f));
+}
+
+.hexgrid div {
+  width: var(--s);
+  margin: var(--m);
+  height: calc(var(--s)*1.1547);
+  display: inline-block;
+  font-size: initial;
+  background: black;
+  margin-bottom: calc(var(--m) - var(--s) * 0.2885);
+  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+}
+
 header {
   position: fixed;
-  opacity: .85;
+  opacity: 1;
   top: 0;
   line-height: 1.5;
   height: 6.5vw;
@@ -235,9 +407,11 @@ header {
   display: flex;
   justify-content: center;
   margin-bottom: 5%;
-  background: var(--color-background-soft);
+  /* background: var(--color-background-soft); */
+  background: #2828289d;
   border-bottom: .25vw solid var(--secondary);
   z-index: 20;
+  backdrop-filter: blur(5px);
 }
 
 #header-border {

@@ -53,7 +53,7 @@ defineProps<{
   polyline {
     fill: none;
     stroke-linecap: round;
-    stroke: var(--secondary);
+    stroke: var(--gold);
   }
   
   .animated {
@@ -69,14 +69,14 @@ defineProps<{
   @keyframes move {
     25%, 50% {
       stroke-dashoffset: 0;
-      stroke: var(--primary);
+      stroke: rgba(160, 160, 160, 0.3);
     }
     67% {
-      stroke: var(--secondary);
+      stroke: var(--gold);
     }
     75%, to {
       stroke-dashoffset: -105%;
-      stroke: var(--secondary);
+      stroke: var(--gold);
     }
   }
 </style>
