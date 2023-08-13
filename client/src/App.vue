@@ -499,7 +499,7 @@ a:hover {
   width: 95%;
   height: 50%;
   left: 2.5%;
-  top: .7vw;
+  top: .5vw;
 }
 
 

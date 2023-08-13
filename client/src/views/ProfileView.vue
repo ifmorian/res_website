@@ -19,7 +19,17 @@
         <div class="content">
           <div class="bio">{{ accountInfo.bio }}</div>
           <div class="roles" ref="roles">
-            <img src="../assets/images/lol/images/summoners_rift2.gif" alt="">
+            <div class="roles-circle" ref="rolesCircle">
+              <span>c</span>
+              <span>l</span>
+              <span>i</span>
+              <span>c</span>
+              <span>k</span>
+              <span>.</span>
+              <span>.</span>
+              <span>.</span>
+            </div>
+            <img src="../assets/images/lol/images/summoners_rift2.gif" alt="" ref="rolesImage">
             <div class="roles-logo">
               <div class="roles-logo-wrapper top" :class="{'active-role': role % 2 === 0}">
                 <img src="../assets/images/lol/roles/top.png" alt="">
@@ -72,11 +82,14 @@
 
       AuthenticationService.getUserData().then((res: AxiosResponse) => {
         this.accountInfo = res.data;
+        let bio = this.accountInfo.bio.split("\n");
         this.accountInfo.bio = this.accountInfo.bio.replace(/P!L!ACEHOLD!!ER/gm, "");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/, "P!L!ACEHOLD!!ER");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/, "P!L!ACEHOLD!!ER");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/gm, " ");
         this.accountInfo.bio = this.accountInfo.bio.replace(/P!L!ACEHOLD!!ER/gm, "\n");
+
+        console.log(this.accountInfo.bio)
       }).catch((error: Error) => console.error(error));
       
       AccountService.getLolRole().then((res: AxiosResponse) => {
@@ -85,7 +98,6 @@
     },
     mounted() {
       const cardTitle = this.$refs.cardTitle as HTMLDivElement
-      const roles = this.$refs.roles as HTMLDivElement
       document.addEventListener('scroll', () => {
         if (window.scrollY >= 0.08 * window.outerWidth) {
           cardTitle.classList.add('is-pinned');
@@ -93,11 +105,28 @@
         else {
           cardTitle.classList.remove('is-pinned');
         }
+      });
 
-        if (window.scrollY < .1 * window.innerWidth) roles.classList.remove('in-sight');
-        else if (window.scrollY > .2 * window.innerWidth) roles.classList.remove('in-sight');
-        else roles.classList.add('in-sight');
-      })
+      (this.$refs.rolesImage as HTMLImageElement).addEventListener('click', () => {
+        (this.$refs.roles as HTMLDivElement).classList.toggle('in-sight')
+      });
+
+      const rolesCircle = this.$refs.rolesCircle as HTMLDivElement;
+      
+      const rotate = (angle: number, offset: number = 10) => {
+        rolesCircle.childNodes.forEach((el, key) => {
+          (el as HTMLSpanElement).style.transform = 'rotate(' + (key *  offset + angle) + 'deg)';
+        });
+      };
+      rotate(-80);
+      rolesCircle.addEventListener('mouseover', () => {
+        rolesCircle.childNodes.forEach((el, key) => {
+          rotate(-20, 15);
+        });
+      });
+      rolesCircle.addEventListener('mouseleave', () => {
+        rotate(-80, 10);
+      });
     }
   }
 </script>
@@ -202,9 +231,9 @@
 
   .pfp-border {
     position: absolute;
-    left: -5%; top: -5%;
-    width: 110%;
-    height: 110%;
+    left: -6%; top: -4%;
+    width: 112%;
+    height: 108%;
     background: linear-gradient(#7e116c, #47879b);
     border-radius: 50%;
     outline: 1px solid rgba(10, 10, 10, .5);
@@ -286,6 +315,31 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+
+  .roles-circle {
+    position: absolute;
+    z-index: 10;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
+
+  .roles.in-sight .roles-circle {
+    display: none;
+  }
+
+  .roles-circle span {
+    width: 175%;
+    height: 175%;
+    top: -37.5%;
+    left: -37.5%;
+    transform-origin: center;
+    position: absolute;
+    text-align: center;
+    font-size: 100%;
+    font-weight: bold;
+    transition: transform .2s;
   }
 
   .roles-title {
