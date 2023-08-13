@@ -82,14 +82,11 @@
 
       AuthenticationService.getUserData().then((res: AxiosResponse) => {
         this.accountInfo = res.data;
-        let bio = this.accountInfo.bio.split("\n");
         this.accountInfo.bio = this.accountInfo.bio.replace(/P!L!ACEHOLD!!ER/gm, "");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/, "P!L!ACEHOLD!!ER");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/, "P!L!ACEHOLD!!ER");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/gm, " ");
         this.accountInfo.bio = this.accountInfo.bio.replace(/P!L!ACEHOLD!!ER/gm, "\n");
-
-        console.log(this.accountInfo.bio)
       }).catch((error: Error) => console.error(error));
       
       AccountService.getLolRole().then((res: AxiosResponse) => {
@@ -107,7 +104,8 @@
         }
       });
 
-      (this.$refs.rolesImage as HTMLImageElement).addEventListener('click', () => {
+      const roleImage = this.$refs.rolesImage as HTMLImageElement;
+      roleImage.addEventListener('click', () => {
         (this.$refs.roles as HTMLDivElement).classList.toggle('in-sight')
       });
 
@@ -119,12 +117,12 @@
         });
       };
       rotate(-80);
-      rolesCircle.addEventListener('mouseover', () => {
+      roleImage.addEventListener('mouseover', () => {
         rolesCircle.childNodes.forEach((el, key) => {
           rotate(-20, 15);
         });
       });
-      rolesCircle.addEventListener('mouseleave', () => {
+      roleImage.addEventListener('mouseleave', () => {
         rotate(-80, 10);
       });
     }
@@ -231,9 +229,9 @@
 
   .pfp-border {
     position: absolute;
-    left: -6%; top: -4%;
-    width: 112%;
-    height: 108%;
+    left: -5%; top: -5%;
+    width: 110%;
+    height: 110%;
     background: linear-gradient(#7e116c, #47879b);
     border-radius: 50%;
     outline: 1px solid rgba(10, 10, 10, .5);
@@ -320,9 +318,11 @@
   .roles-circle {
     position: absolute;
     z-index: 10;
+    pointer-events: none;
     width: 60px;
     height: 60px;
     border-radius: 50%;
+    user-select: none;
   }
 
   .roles.in-sight .roles-circle {
@@ -359,6 +359,7 @@
     border: 30px solid var(--gold);
     border-radius: 30px;
     transition: border-width .2s, width .2s;
+    cursor: pointer;
   }
 
   .roles.in-sight > img {
@@ -372,6 +373,7 @@
     height: 100%;
     display: none;
     position: absolute;
+    pointer-events: none;
   }
 
   .roles.in-sight > .roles-logo {
