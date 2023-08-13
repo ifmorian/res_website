@@ -331,7 +331,7 @@ import { watch } from 'vue';
       document.addEventListener('mousemove', (e) => {
         let x = e.clientX + .05 * window.innerWidth;
         let y = e.clientY + .05 * window.innerHeight;
-        let bg = "radial-gradient(circle farthest-corner at " + x + "px " + y + "px, transparent 0% 7%, rgba(0, 0, 0, .8) 15%";
+        let bg = "radial-gradient(circle farthest-corner at " + x + "px " + y + "px, transparent 1%, rgba(0, 0, 0, .5) 15%";
         (this.$refs.hexgrid as HTMLDivElement).style.backgroundImage = bg;
       })
     },
@@ -370,8 +370,8 @@ import { watch } from 'vue';
   left: -5%; top: -5%;
   position: absolute;
   font-size: 0;
-  --s: 100px;
-  --m: 4px;
+  --s: 6.4vw;
+  --m: .5vw;
   --f: calc(1.732 * var(--s) + 4 * var(--m)  - 1px);
   opacity: .4;
 }

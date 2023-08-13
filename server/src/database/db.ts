@@ -43,7 +43,7 @@ const db: Database = new sqlite3.Database('./databases/database.db', (err: any) 
     password TEXT NOT NULL,
     admin INTEGER DEFAULT 0,
     gamertag TEXT,
-    bio TEXT
+    bio TEXT DEFAULT ''
   );`);
   db.run(`CREATE TABLE IF NOT EXISTS ${USER_IN_TEAM_TABLE} (
     user_id INTEGER,

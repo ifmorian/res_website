@@ -8,7 +8,7 @@
           <div class="pfp-wrapper">
             <div class="pfp-border"></div>
             <div class="pfp">
-              <img :src="'http://localhost:3000/lol/splash/' + mainChamps[2].champion + '.jpg'" alt="">
+              <img src="../assets/logo_wotext_white.svg" alt="">
             </div>
           </div>
           <div class="card-title-name-wrapper">
@@ -72,14 +72,11 @@
 
       AuthenticationService.getUserData().then((res: AxiosResponse) => {
         this.accountInfo = res.data;
-        let bio = this.accountInfo.bio.split("\n");
         this.accountInfo.bio = this.accountInfo.bio.replace(/P!L!ACEHOLD!!ER/gm, "");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/, "P!L!ACEHOLD!!ER");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/, "P!L!ACEHOLD!!ER");
         this.accountInfo.bio = this.accountInfo.bio.replace(/[\r\n]/gm, " ");
         this.accountInfo.bio = this.accountInfo.bio.replace(/P!L!ACEHOLD!!ER/gm, "\n");
-
-        console.log(this.accountInfo.bio)
       }).catch((error: Error) => console.error(error));
       
       AccountService.getLolRole().then((res: AxiosResponse) => {
@@ -205,9 +202,9 @@
 
   .pfp-border {
     position: absolute;
-    left: -6%; top: -4%;
-    width: 112%;
-    height: 108%;
+    left: -5%; top: -5%;
+    width: 110%;
+    height: 110%;
     background: linear-gradient(#7e116c, #47879b);
     border-radius: 50%;
     outline: 1px solid rgba(10, 10, 10, .5);

@@ -452,6 +452,20 @@
         this.roles.value[4] = res.data.role % 11 == 0;
       }).catch(() => this.dataLoadingError());
     },
+    mounted() {
+      let navLinks = document.querySelectorAll('.nav-link');
+      let sections = document.querySelectorAll('.content-section');
+      document.addEventListener('scroll', () => {
+        let current = 0;
+        sections.forEach((el, key) => {
+          if ((el as HTMLDivElement).offsetTop - 200 < window.scrollY) current = key;
+        });
+        navLinks.forEach((el, key) => {
+          if (key === current) return el.classList.add('nav-current');
+          el.classList.remove('nav-current');
+        })
+      });
+    },
     methods: {
       notLoggedIn() {
         store.notification.value.message = 'You must be logged in!'
@@ -670,6 +684,10 @@
 
   .nav-link {
     margin-bottom: 2.5vw;
+  }
+
+  .nav-current {
+    color: var(--primary);
   }
 
   .divider {
@@ -1074,7 +1092,7 @@
     width: 100%;
     border-radius:10px;
     max-height: 500%;
-    overflow: scroll;
+    overflow-y: scroll;
     opacity: 1;
     visibility: visible;
     transition: opacity .1s, visibility .1s;
