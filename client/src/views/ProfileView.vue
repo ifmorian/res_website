@@ -178,6 +178,7 @@
     width: 90%;
     height: 1000px;
     opacity: .8;
+    margin-bottom: 10%;
   }
 
   .card-border {
@@ -317,7 +318,7 @@
 
   .roles-circle {
     position: absolute;
-    z-index: 10;
+    z-index: 4;
     pointer-events: none;
     width: 60px;
     height: 60px;
