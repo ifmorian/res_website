@@ -171,10 +171,12 @@
       interact1.addEventListener('mousedown', () => {
         clicked1 = true;
         document.body.style.cursor = 'grabbing';
+        interact1.style.cursor = 'grabbing';
       });
       document.addEventListener('mouseup', () => {
         clicked1 = false
         document.body.style.cursor = 'unset';
+        interact1.style.cursor = 'grab';
       });
       document.addEventListener('mousemove', (e: MouseEvent) => {
         if (!clicked1) return;
@@ -587,7 +589,7 @@
     height: 40px;
     border: 2px solid black;
     outline: 3px solid var(--secondary);
-    border-radius: 20px;
+    border-radius: 13px;
     background: linear-gradient(to right, var(--success), var(--error));
     filter: drop-shadow(0 0 7px black);
   }
@@ -613,6 +615,7 @@
       drop-shadow(1px -1px 0px black)
       drop-shadow(-1px -1px 0px black);
     z-index: 2;
+    transition: left .05s;
   }
 
   .slider-bar-value > svg {
@@ -644,6 +647,7 @@
     top: -30%;
     left: -6px;
     cursor: grab;
+    z-index: 4;
   }
 
   .slider-bar-value-interact.grabbed {
